@@ -1,2 +1,11 @@
-in_dist_coverage,in_dist_empty_rate (False Alarm),in_dist_mean_conf,ood_conformal_rejection_rate,ood_baseline_hallucination_rate,ood_baseline_mean_conf,ood_baseline_max_conf,q_hat
-0.9501512560831251,0.04300933841904511,0.99002594,0.779,0.22099999999999997,0.7715597748756409,0.9994283318519592,0.034455955
+ood_benchmark,method,finite_sample_guarantee,empty_set_rejection_rate,in_dist_false_rejection_rate,auroc,aupr
+"Suite 1: Contamination / Sensor OOD (N=1,000)",Standard Argmax (Literature Baseline),False,0.0,0.0,0.5,0.5
+"Suite 1: Contamination / Sensor OOD (N=1,000)",Max Softmax Probability (MSP Heuristic),False,0.82,0.05011179797448376,0.9568376298829409,0.7906127515475214
+"Suite 1: Contamination / Sensor OOD (N=1,000)",Energy Score (Liu et al. Heuristic),False,0.149,0.05011179797448376,0.5494830987767987,0.21343596404930312
+"Suite 1: Contamination / Sensor OOD (N=1,000)",Softmax-Only Conformal (Empty-Set C(X)=0),True,0.779,0.04300933841904511,0.9568376298829409,0.7906127515475214
+"Suite 1: Contamination / Sensor OOD (N=1,000)",Hybrid Embedding-Density Conformal (Ours),True,1.0,0.04182559515980534,0.9934832303038273,0.936509297570781
+Suite 2: Leave-Class-Out Unseen Defect Modes (N=800),Standard Argmax (Literature Baseline),False,0.0,0.0,0.5,0.5
+Suite 2: Leave-Class-Out Unseen Defect Modes (N=800),Max Softmax Probability (MSP Heuristic),False,0.9975,0.05012494487726003,0.9973932456269293,0.97743214201129
+Suite 2: Leave-Class-Out Unseen Defect Modes (N=800),Energy Score (Liu et al. Heuristic),False,1.0,0.05012494487726003,0.9999112523886521,0.9992143953890965
+Suite 2: Leave-Class-Out Unseen Defect Modes (N=800),Softmax-Only Conformal (Empty-Set C(X)=0),True,0.99625,0.04365721005438777,0.9973932456269293,0.97743214201129
+Suite 2: Leave-Class-Out Unseen Defect Modes (N=800),Hybrid Embedding-Density Conformal (Ours),True,0.9925,0.046303101572835514,0.997735374099662,0.9844205576657358
