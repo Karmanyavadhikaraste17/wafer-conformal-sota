@@ -1,0 +1,2 @@
+in_dist_coverage,in_dist_empty_rate (False Alarm),in_dist_mean_conf,ood_conformal_rejection_rate,ood_baseline_hallucination_rate,ood_baseline_mean_conf,ood_baseline_max_conf,q_hat
+0.9501512560831251,0.04300933841904511,0.99002594,0.779,0.22099999999999997,0.7715597748756409,0.9994283318519592,0.034455955
