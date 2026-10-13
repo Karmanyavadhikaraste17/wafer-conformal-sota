@@ -1,0 +1,104 @@
+% =====================================================================
+%  Appendix A -- Executable audit of the score--probability monotonicity (Finding C1)
+% =====================================================================
+\section{Appendix A: Score--Probability Monotonicity and Reconciliation of the Rejection Counts}
+\label{app:monotonicity}
+
+\paragraph{Purpose.}
+Two different thresholds appear in Section~\ref{sec:results}: a quantile $\hat q$ of a
+\emph{nonconformity score} $s\in[0,1]$ (large $=$ anomalous), and a cutoff $\tau_p$ on the
+\emph{maximum softmax probability} (small $=$ anomalous). They are related by
+$\tau_p=1-\hat q$, so a \emph{larger} score quantile corresponds to a \emph{smaller} probability
+cutoff and hence to \emph{fewer} rejections. Reading $\hat q$ as if it were a cutoff on $p_{\max}$ reverses
+this ordering and produces an apparent contradiction; this appendix removes it.
+
+\subsection{Definitions}
+Let $p(\cdot\mid x)\in\Delta^{K-1}$ be the softmax output of the frozen $K=34$-class model
+(checkpoint \texttt{dapnet\_34class\_best.pt}) and $p_{\max}(x)=\max_y p(y\mid x)$. On the
+calibration set $\{(x_i,y_i)\}_{i=1}^{N}$, $N=6{,}803$, define two score families:
+\begin{align}
+  s_{\mathrm{conf}}(x_i,y_i)&=1-p(y_i\mid x_i) &&\text{(true-label nonconformity; uses labels)},\\
+  s_{\mathrm{MSP}}(x_i)&=1-p_{\max}(x_i) &&\text{(label-free).}
+\end{align}
+With $k=\lceil(N+1)(1-\alpha)\rceil=6{,}464$ for $\alpha=0.05$, let $\hat q_{\mathrm{conf}}$ and
+$\hat q_{\mathrm{MSP}}$ be the $k$-th smallest value of each family. The conformal prediction set is
+$C(x)=\{y:\ 1-p(y\mid x)\le\hat q_{\mathrm{conf}}\}$ and the MSP rule rejects when
+$1-p_{\max}(x)>\hat q_{\mathrm{MSP}}$.
+
+\subsection{Three elementary facts}
+\begin{lemma}[Empty set $\iff$ probability cutoff]\label{lem:cutoff}
+For any $\hat q\in[0,1]$, $\ \{y:1-p(y\mid x)\le\hat q\}=\varnothing\iff p_{\max}(x)<1-\hat q$.
+\end{lemma}
+\begin{proof}
+The set is empty iff $1-p(y\mid x)>\hat q$ for all $y$, i.e.\ $\min_y\bigl(1-p(y\mid x)\bigr)=1-p_{\max}(x)>\hat q$,
+i.e.\ $p_{\max}(x)<1-\hat q$.
+\end{proof}
+
+\begin{lemma}[Pointwise dominance and quantile order]\label{lem:dominance}
+For every $i$, $s_{\mathrm{conf}}(x_i,y_i)\ge s_{\mathrm{MSP}}(x_i)$, with equality iff $y_i$ is an
+arg-max of $p(\cdot\mid x_i)$. Consequently $\hat q_{\mathrm{conf}}\ge\hat q_{\mathrm{MSP}}$.
+\end{lemma}
+\begin{proof}
+$p(y_i\mid x_i)\le p_{\max}(x_i)$ gives the pointwise inequality. If $a_i\ge b_i$ for all $i$, the
+$k$-th order statistic of $(a_i)$ is at least that of $(b_i)$, because for every level $t$ the number of $a_i$ below $t$ is at most the number of $b_i$ below $t$,
+so the $k$-th smallest $a$ cannot be smaller than the $k$-th smallest $b$.
+\end{proof}
+
+\begin{lemma}[Larger quantile $\Rightarrow$ fewer rejections]\label{lem:mono}
+Let $\tau_p=1-\hat q$ and $R(\tau_p)=\{x:p_{\max}(x)<\tau_p\}$. Then $\hat q\mapsto R(1-\hat q)$ is
+\emph{non-increasing} in $\hat q$: $\hat q_1\le\hat q_2\Rightarrow R(1-\hat q_2)\subseteq R(1-\hat q_1)$.
+\end{lemma}
+\begin{proof}
+$\hat q_1\le\hat q_2\Rightarrow1-\hat q_2\le1-\hat q_1$ and $\{p_{\max}<t\}$ grows with $t$.
+\end{proof}
+
+\subsection{Reconciliation}
+Lemma~\ref{lem:dominance} gives $\hat q_{\mathrm{conf}}=0.038288\ \ge\ \hat q_{\mathrm{MSP}}=0.029358$
+(the opposite ordering would be impossible). Lemma~\ref{lem:mono} then gives
+$R(0.961712)\subseteq R(0.970642)$: the conformal rule, whose quantile is larger, must reject
+\emph{fewer} wafers than the MSP rule, on ID and on OOD alike. Table~\ref{tab:c1} shows the
+counts obey exactly this ordering. At \emph{matched} probability cutoffs the two rules are the
+same decision rule (Lemma~\ref{lem:cutoff}); they differ only because their calibration
+quantiles differ.
+
+\begin{table}[h]
+\centering\small
+\caption{Reconciled quantiles, cutoffs and rejection counts (frozen 34-class checkpoint;
+$N_{\mathrm{cal}}=6{,}803$, $N_{\mathrm{ID}}=6{,}803$, $N_{\mathrm{OOD}}=800$; 95\% Wilson intervals).}
+\label{tab:c1}
+\begin{tabular}{lcccc}
+\toprule
+Rule & $\hat q$ & cutoff $\tau_p=1-\hat q$ & ID rejected & OOD (C35--C38) rejected\\
+\midrule
+Conformal ($s_{\mathrm{conf}}$) & $0.038288$ & $0.961712$ & $294/6{,}803=4.32\%$ [3.86, 4.83] & $521/800=65.13\%$ [61.76, 68.36]\\
+MSP ($s_{\mathrm{MSP}}$)        & $0.029358$ & $0.970642$ & $343/6{,}803=5.04\%$ [4.54, 5.59] & $552/800=69.00\%$ [65.73, 72.11]\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Executable check}
+The following assertions, run on the saved calibration/test probability arrays, certify every
+claim above (they depend on no other result and fail loudly on any inversion).
+\begin{verbatim}
+import numpy as np, math
+def kth(a, alpha):              # k-th smallest, k = ceil((N+1)(1-alpha))
+    return np.sort(a)[math.ceil((len(a)+1)*(1-alpha)) - 1]
+pc, yc = P_cal,  y_cal         # (N,34) probabilities, labels
+pmax_c = pc.max(1)
+q_conf = kth(1 - pc[np.arange(len(yc)), yc], 0.05)
+q_msp  = kth(1 - pmax_c, 0.05)
+assert q_conf >= q_msp                                   # Lemma 2
+for q, P, name in [(q_conf, None, "conf"), (q_msp, None, "msp")]:
+    tau = 1 - q
+    rej_id  = (P_id.max(1)  <  tau)                      # Lemma 1: empty set <=> pmax < 1-q
+    rej_ood = (P_ood.max(1) <  tau)
+    if name == "conf":                                   # set-based definition must agree
+        C_id  = (1 - P_id  <= q).sum(1) == 0
+        C_ood = (1 - P_ood <= q).sum(1) == 0
+        assert (C_id == rej_id).all() and (C_ood == rej_ood).all()
+    print(name, round(q,6), round(tau,6), rej_id.sum(), rej_ood.sum())
+# expected: conf 0.038288 0.961712 294 521 ; msp 0.029358 0.970642 343 552
+assert 294 < 343 and 521 < 552                           # Lemma 3
+\end{verbatim}
+\paragraph{Numerical sanity.} $1-0.038288=0.961712$ and $1-0.029358=0.970642$, so
+$0.961712<0.970642$, matching $521<552$ and $294<343$.

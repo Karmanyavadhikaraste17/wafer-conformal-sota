@@ -1,0 +1,5 @@
+Model_Variant,Backbone,Scoring_Rule,Unseen_OOD_Rejection,ID_FPR,AUROC,AUPR
+Cartesian DAP-Net (Flat Baseline),Cartesian CNN,1 - max p,65.13% (521/800),4.32% (294/6803),0.9168,0.6607
+Polar Net (Flat Head 2),PolarConv,1 - max p,68.25% (546/800),4.85% (330/6803),0.924,0.6812
+Trivial Discrete Symbolic Rule,PolarConv,sum(I(l_k>0)) > 3,96.25% (770/800),4.10% (279/6803),0.965,0.941
+CompositionalPolarNet (Ours),PolarConv,S_lib(x),97.50% (780/800),4.78% (325/6803),0.9941,0.9792

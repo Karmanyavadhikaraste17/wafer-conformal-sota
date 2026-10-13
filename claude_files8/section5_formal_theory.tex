@@ -1,0 +1,241 @@
+% =====================================================================
+%  Section 5 -- Formal Theory   (input from main.tex; needs amsmath, amssymb, amsthm)
+%  Theorem numbering: Theorem 1, Proposition 2, Proposition 3 (shared counter);
+%  Lemma 1 and Corollary 1 have their own counters.
+% =====================================================================
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newcommand{\Vk}{\mathcal{V}_{\mathrm{known}}}
+\newcommand{\Slib}{S_{\mathrm{lib}}}
+\newcommand{\qlib}{\hat q_{\mathrm{lib}}}
+\newcommand{\softplus}{\operatorname{softplus}}
+\newcommand{\Prb}{\mathbb{P}}
+\providecommand{\sigmoid}{\sigma}
+
+\section{Formal Theory: Why Compositional Factorization Separates Unseen Mixtures}
+\label{sec:theory}
+
+This section explains \emph{why} the library-novelty score $\Slib$ of
+Section~\ref{sec:method} detects unseen compositions, and \emph{what exactly is and is not
+guaranteed}. Three kinds of statements are kept strictly apart:
+(a)~a finite-sample, distribution-free guarantee on the in-distribution (ID) false-rejection
+rate (Lemma~\ref{lem:conformal}); (b)~a \emph{deterministic, conditional} separation bound that
+converts primitive-detector margins into a lower bound on $\Slib$ (Theorem~\ref{thm:sep},
+Corollary~\ref{cor:thr}, Proposition~\ref{prop:known}); and (c)~a structural statement about
+what a flat softmax can represent (Proposition~\ref{prop:closed}). Statement~(b) is \emph{not} a
+probabilistic guarantee of out-of-distribution (OOD) detection: it holds only when the
+primitive head satisfies the stated margin condition on the wafer in question.
+
+\subsection{Setup and notation}
+Let $\mathcal{P}=\{\mathrm{C},\mathrm{D},\mathrm{EL},\mathrm{ER},\mathrm{L},\mathrm{NF},\mathrm{S},\mathrm{RAND}\}$
+be the $8$ defect primitives, indexed $k=0,\dots,7$, and let $z\in\{0,1\}^8$ be an attribute
+vector. The physical grammar admits the set $\mathcal{V}\subset\{0,1\}^8$ of configurations
+satisfying $z_{\mathrm{C}}z_{\mathrm{D}}=0$, $z_{\mathrm{EL}}z_{\mathrm{ER}}=0$ and
+$(z_{\mathrm{NF}}\lor z_{\mathrm{RAND}})\Rightarrow\sum_k z_k=1$; one checks by enumeration that
+$|\mathcal{V}|=38$. The \emph{known vocabulary} is
+$\Vk=\{z\in\mathcal{V}:\ \|z\|_1\le c\}$ with $c=3$, so $|\Vk|=34$ (classes C1--C34), while the
+four quadruple-mixtures C35--C38 are exactly the elements of $\mathcal{V}$ with $\|z\|_1=4$ and
+lie outside $\Vk$.
+
+The primitive head outputs logits $l(x)\in\mathbb{R}^8$ and induces the factorized distribution
+\begin{equation}
+  q_\theta(z\mid x)=\prod_{k=0}^{7}\sigmoid(l_k(x))^{z_k}\bigl(1-\sigmoid(l_k(x))\bigr)^{1-z_k},
+  \qquad z\in\{0,1\}^8 ,
+  \label{eq:q}
+\end{equation}
+which is a probability distribution on all $2^8$ vectors (not only on $\mathcal{V}$). The
+\emph{library-novelty score} and the induced \emph{library set} are
+\begin{equation}
+  \Slib(x)=-\log\sum_{z\in\Vk}q_\theta(z\mid x),
+  \qquad
+  C_{\mathrm{lib}}(x)=\begin{cases}\varnothing & \Slib(x)>\qlib,\\ \text{(in-library)} & \text{otherwise,}\end{cases}
+  \label{eq:slib}
+\end{equation}
+where ``$C_{\mathrm{lib}}(x)=\varnothing$'' is shorthand for ``$x$ is flagged as out-of-library''
+and $\qlib$ is calibrated as follows. Given $N$ ID calibration scores
+$S_1,\dots,S_N$ ($\Slib$ evaluated on held-out ID wafers) and a level $\alpha\in(0,1)$, let
+$\qlib=S_{(k)}$ be the $k$-th smallest calibration score, $k=\lceil (N+1)(1-\alpha)\rceil$.
+Here $N=6{,}803$ and $\alpha=0.05$, so $k=6{,}464$.
+
+\begin{lemma}[ID false-rejection control]\label{lem:conformal}
+Assume the network parameters $\theta$ and the vocabulary $\Vk$ are fixed independently of the
+calibration and test wafers, and that a new ID wafer $X_{N+1}$ is exchangeable with the
+calibration wafers. Then $\Prb\bigl(\Slib(X_{N+1})>\qlib\bigr)\le\alpha$.
+\end{lemma}
+\begin{proof}
+By exchangeability (and, with ties, a standard randomization/worst-case argument), the rank of
+$S_{N+1}$ among $S_1,\dots,S_{N+1}$ is uniform on $\{1,\dots,N+1\}$ up to ties that only
+decrease the rejection probability. The event $S_{N+1}>S_{(k)}$ requires rank $>k$, which has
+probability at most $(N+1-k)/(N+1)\le\alpha$.
+\end{proof}
+This is the conformal-outlier construction of Bates et al.~\cite{bates2023conformal}
+(see also~\cite{vovk2005algorithmic,angelopoulos2023gentle}). It controls the \emph{marginal}
+(averaged over calibration draws) ID false-rejection rate only; the realized rate on a finite
+test set fluctuates around $\alpha$ (we report Wilson intervals) and no statement about OOD power
+is implied. Power is the subject of the remainder of this section.
+
+\subsection{A margin condition and the separation bound}
+For a wafer $x$ whose true composition is $z^\star\in\mathcal{V}$, let
+$A=\{k: z^\star_k=1\}$ be its active primitives and $n=|A|$.
+
+\begin{definition}[$\tau$-margin on the active set]\label{def:margin}
+The primitive head has \emph{margin $\tau\in\mathbb{R}$ on $x$} if $l_k(x)\ge\tau$ for every
+$k\in A$. Write $\varepsilon_\tau=\sigmoid(-\tau)=1/(1+e^{\tau})\le e^{-\tau}$.
+\end{definition}
+Note that $\tau$ may be negative: $\tau=0$ means every active primitive has detector probability
+at least $1/2$. The condition concerns the network's \emph{output} on $x$; it is a property of the
+trained model, not of the label.
+
+\begin{theorem}[Compositional separation bound]\label{thm:sep}
+Let $x$ have active set $A$ with $n=|A|$ and $M=n-c\ge1$, and suppose the head has margin $\tau$
+on $x$. Then
+\begin{align}
+&\text{(i)}\quad \sum_{z\in\Vk}q_\theta(z\mid x)\ \le\ \binom{n}{M}\varepsilon_\tau^{M}\ \le\ \binom{n}{M}e^{-M\tau},\label{eq:i}\\
+&\text{(ii)}\quad \Slib(x)\ \ge\ M\log\!\bigl(1+e^{\tau}\bigr)-\log\binom{n}{M}\ \ge\ M\tau-\log\binom{n}{M},\label{eq:ii}\\
+&\text{(iii)}\quad \Slib(x)\ \ge\ -\log\!\bigl(1-\sigmoid(\tau)^{n}\bigr)\ \ge\ \sigmoid(\tau)^{n}.\label{eq:iii}
+\end{align}
+(In the present ontology $n\le4$, so $M=1$ is the only case that occurs; the proof of (iii)
+holds for every $M\ge1$.)
+\end{theorem}
+
+\begin{proof}
+Let $Z\sim q_\theta(\cdot\mid x)$; its coordinates are independent Bernoulli variables with
+$\Prb(Z_k=1)=\sigmoid(l_k)$, and $\sum_{z\in\Vk}q_\theta(z\mid x)=\Prb(Z\in\Vk)$.
+
+\emph{(i)} Every $z\in\Vk$ has $\|z\|_1\le c$, hence $|z\cap A|\le c$ and $|A\setminus z|\ge n-c=M$.
+Therefore $\{Z\in\Vk\}\subseteq\bigcup_{S\subseteq A,\,|S|=M}\{Z_k=0\ \forall k\in S\}$. A union bound over the
+$\binom nM$ subsets and independence give
+\[
+\Prb(Z\in\Vk)\le\sum_{|S|=M}\ \prod_{k\in S}\bigl(1-\sigmoid(l_k)\bigr)=\sum_{|S|=M}\prod_{k\in S}\sigmoid(-l_k)
+\le\binom nM\varepsilon_\tau^{M},
+\]
+because $\sigmoid(-\cdot)$ is decreasing and $l_k\ge\tau$ on $A$. Finally $1/(1+e^\tau)\le e^{-\tau}$.
+
+\emph{(ii)} Apply $-\log$ (decreasing) to (i): $-\log\bigl(\binom nM\varepsilon_\tau^M\bigr)=M\log(1+e^\tau)-\log\binom nM$,
+and $\log(1+e^\tau)\ge\tau$.
+
+\emph{(iii)} If $Z\supseteq A$ then $\|Z\|_1\ge n>c$, so $Z\notin\Vk$. Hence
+$\Prb(Z\in\Vk)\le1-\Prb(Z\supseteq A)=1-\prod_{k\in A}\sigmoid(l_k)\le1-\sigmoid(\tau)^n$,
+since $\sigmoid$ is increasing. Applying $-\log$ gives the first inequality, and $-\log(1-u)\ge u$
+gives the second.
+\end{proof}
+
+\begin{remark}[Two regimes]
+Bounds (i)--(ii) come from a union bound and are informative only for large margins: (ii) is vacuous whenever $M\log(1+e^{\tau})\le\log\binom nM$, which for $n=4$, $M=1$ means $\tau\le\log3\approx1.10$. They show the
+qualitative law: the library mass decays \emph{exponentially} and $\Slib$ grows
+\emph{linearly} in the margin. Bound~(iii) uses the joint event that all $n$ primitives fire,
+is non-vacuous for any $\tau$, and is the one used for threshold statements.
+\end{remark}
+
+\begin{corollary}[Margin sufficient for rejection]\label{cor:thr}
+Let $n=4$, $M=1$ and let $\qlib>0$ be the calibrated threshold. Define
+\[
+\tau^\ast(\qlib)=\sigmoid^{-1}\!\Bigl(\bigl(1-e^{-\qlib}\bigr)^{1/4}\Bigr).
+\]
+If the head has margin $\tau>\tau^\ast(\qlib)$ on $x$, then $\Slib(x)>\qlib$, i.e.\ $x$ is
+rejected as out-of-library. For $\qlib=0.0101$, $\tau^\ast\approx-0.769$.
+\end{corollary}
+\begin{proof}
+By (iii), $\Slib(x)\ge-\log(1-\sigmoid(\tau)^4)$, which is strictly increasing in $\tau$ and
+equals $\qlib$ at $\tau=\tau^\ast$ (solve $1-\sigmoid(\tau)^4=e^{-\qlib}$).
+\end{proof}
+\noindent\emph{Reading of the corollary.} A quad-mixture is rejected whenever \emph{all four} of
+its constituent primitives are detected with probability above $\sigmoid(\tau^\ast)\approx0.316$.
+The detection requirement is deliberately weak, which is why the factorized score is
+effective; conversely the corollary identifies the failure mode precisely: a quad-mixture can
+escape only if at least one constituent primitive falls below $\tau^\ast$. This matches the
+observation that the $20$ unrejected wafers of C35--C38 all have a Loc or Scratch logit below
+$-0.77<\tau^\ast$ (Section~\ref{sec:results}). The numerical value of $\tau^\ast$ must be computed from the
+\emph{unrounded} $\qlib$; because $\tau^\ast$ increases with $\qlib$, a rounded
+$-0.77$ lies slightly \emph{outside} the sufficient region.
+
+\subsection{Known patterns are not penalized}
+\begin{proposition}[Low score on in-library patterns]\label{prop:known}
+Let $z^\star\in\Vk$ with $A=\{k:z^\star_k=1\}$, $|A|=n$, and suppose $l_k\ge\tau$ for $k\in A$ and
+$l_k\le-\tau'$ for $k\notin A$. Then
+\[
+0\le\Slib(x)\ \le\ -\log q_\theta(z^\star\mid x)\ \le\ n\,\softplus(-\tau)+(8-n)\,\softplus(-\tau')\ \le\ n e^{-\tau}+(8-n)e^{-\tau'} ,
+\]
+which tends to $0$ as $\tau,\tau'\to\infty$.
+\end{proposition}
+\begin{proof}
+Since $z^\star\in\Vk$, $\sum_{z\in\Vk}q_\theta\ge q_\theta(z^\star\mid x)$, so $\Slib\le-\log q_\theta(z^\star\mid x)$.
+Because $-\log\sigmoid(l)=\softplus(-l)$ and $-\log(1-\sigmoid(l))=\softplus(l)$,
+$-\log q_\theta(z^\star\mid x)=\sum_{k\in A}\softplus(-l_k)+\sum_{k\notin A}\softplus(l_k)$, and $\softplus$ is
+increasing with $\softplus(t)\le e^{t}$. Non-negativity holds as $\sum_z q_\theta\le1$.
+\end{proof}
+Proposition~\ref{prop:known} says that well-detected library patterns are not rejected
+\emph{by the score}; it does not by itself bound the ID false-rejection rate, which is controlled
+by calibration (Lemma~\ref{lem:conformal}) and is reported empirically in Section~\ref{sec:results}.
+
+\subsection{Why a flat softmax cannot express library novelty}
+\begin{proposition}[Closed-world normalization]\label{prop:closed}
+Let a flat classifier output $p(\cdot\mid x)\in\Delta^{33}$ over the $34$ known classes. Then
+(a)~its predictive mass on the library is $p(\Vk\mid x)=\sum_{y}p(y\mid x)=1$ for every $x$, so the
+event ``$Y\notin\Vk$'' has probability zero under the model; and (b)~any scoring rule built
+from the flat head is a function $s=g(p(\cdot\mid x))$ of the simplex point alone.
+\end{proposition}
+\begin{proof}
+(a) is the normalization constraint. (b) holds by definition of a score computed from the head output.
+\end{proof}
+\noindent\emph{Consequences.} Under the flat head the quantity that $\Slib$ measures is identically
+$0$; any OOD score derived from it (e.g.\ $1-\max_y p$, as in the conformal baseline) must
+therefore exploit the \emph{shape} of $p$ rather than a probability of novelty, and it cannot distinguish a
+quad-mixture whose mass splits across two known neighbours from an ID wafer that is genuinely
+ambiguous between those same neighbours, whenever their softmax outputs coincide.
+Proposition~\ref{prop:closed} does \emph{not} claim that softmax scores carry no OOD signal
+(the baseline attains $65.13\%$ rejection); it states that the signal is indirect and bounded by what the
+simplex retains. By contrast, \eqref{eq:q} places mass on $\{0,1\}^8\supsetneq\Vk$, so
+novelty is a measurable event with probability $1-\sum_{z\in\Vk}q_\theta(z\mid x)$.
+
+\subsection{Scope, relation to the discrete rule, and attribution}
+\begin{remark}[Grammar is not needed for the bound]
+Theorem~\ref{thm:sep} uses only the cardinality cap $c$; the mutual-exclusion and solitary
+constraints enter only through the definition of $\Vk$. Removing configurations from
+$\Vk$ can only decrease $\sum_{z\in\Vk}q_\theta$ and thus increase $\Slib$, so the bound is
+valid for any $\Vk\subseteq\{z:\|z\|_1\le c\}$.
+\end{remark}
+
+\begin{remark}[Relation to the discrete symbolic rule]\label{rem:trivial}
+Let $R_{\mathrm{rule}}=\{x:\sum_k\mathbb{I}(l_k(x)>0)>3\}$. If $x\in R_{\mathrm{rule}}$, pick four
+indices with $l_k>0$; the probability that all four fire is at least $2^{-4}$, and any such $Z$
+has $\|Z\|_1\ge4$, so $\Slib(x)\ge-\log(1-2^{-4})\approx0.0645>\qlib=0.0101$. Hence
+$R_{\mathrm{rule}}\subseteq\{\Slib>\qlib\}$: the calibrated score rejects \emph{at least}
+everything the rule rejects, plus wafers with weaker evidence. This is consistent with the
+ablation (OOD: $770\le780$; ID: $279\le325$) and shows that the gain of $\Slib$ over the rule is a
+\emph{refinement} (extra $10$ OOD detections at the cost of extra $46$ ID rejections), whereas the gain of
+either over the flat head is due to the factorized primitive representation.
+\end{remark}
+
+\begin{remark}[Beyond the cardinality cap (not evaluated here)]\label{rem:hamming}
+If $z^\star\notin\Vk$ has Hamming distance $M=\min_{z\in\Vk}\|z-z^\star\|_0\ge1$ from the
+vocabulary and the head satisfies $|l_k|\ge\tau$ with the correct sign on \emph{all} $8$ coordinates,
+then $\{Z\in\Vk\}\subseteq\{\|Z-z^\star\|_0\ge M\}$ and the same union bound gives
+$\sum_{z\in\Vk}q_\theta\le\binom8M\varepsilon_\tau^M$. This would cover unseen configurations of any depth
+provided $\Vk$ is defined as the set of configurations observed in training; testing it requires
+leave-one-configuration-out experiments that we do not report.
+\end{remark}
+
+\paragraph{Limitations of the theory.}
+Theorem~\ref{thm:sep} is conditional on the head's margins and is therefore a statement about
+\emph{primitive recall}, not an unconditional OOD guarantee; its proof is an elementary union bound and we
+present it as an explanation of observed behaviour rather than as a deep result. The vocabulary
+cutoff $c=3$ coincides with the unseen set in our benchmark, so the empirical evaluation on
+C35--C38 is an exploratory, post-hoc development result (Section~\ref{sec:results}); novelty from a
+\emph{new primitive} is outside the scope of the bound.
+
+\paragraph{Attribution.}
+The quantity $-\log\sum_{z\models\alpha}\prod_k p_k^{z_k}(1-p_k)^{1-z_k}$ is the \emph{semantic loss}
+of Xu et al.~\cite{xu2018semantic} with the constraint $\alpha$ taken to be membership in $\Vk$;
+we use it at test time as a novelty score and calibrate it conformally rather than as a training
+regularizer. Predicting independent attributes and composing them into class
+posteriors follows Direct Attribute Prediction of Lampert et al.~\cite{lampert2014attribute}.
+The threshold construction follows conformal outlier detection~\cite{bates2023conformal}. Our
+contributions are the wafer-specific grammar, the polar geometry, the margin analysis above, and the
+empirical evaluation---not the score functional itself.
