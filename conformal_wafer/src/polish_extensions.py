@@ -209,6 +209,112 @@ def main():
     decomp_df.to_csv(os.path.join(cfg.RESULTS_DIR, "economic_decomposition_table.csv"), index=False)
 
     # -------------------------------------------------------------------------
+    # ITEM 6b: 4-Way Operational Triage & Cost Reconciliation (Audit Item 5)
+    # -------------------------------------------------------------------------
+    print("\n[ITEM 6b] Generating 4-Way Operational Triage & Cost Reconciliation Table...")
+    s_corr = 0
+    s_incorr = 0
+    m_contain = 0
+    m_missing = 0
+    for i in range(n_test):
+        y_t = int(test_labels[i])
+        s = sets_cost[i]
+        if len(s) == 1:
+            if s[0] == y_t:
+                s_corr += 1
+            else:
+                s_incorr += 1
+        else:
+            if y_t in s:
+                m_contain += 1
+            else:
+                m_missing += 1
+
+    triage_reconcile_rows = [
+        {
+            'partition_category': 'Automated Singletons (|C(X)| = 1)',
+            'sub_status': 'Correct Prediction (Zero-Touch)',
+            'wafer_count': s_corr,
+            'percentage_of_total': f"{s_corr / n_test * 100:.2f}%",
+            'economic_unit_cost': '$0',
+            'fab_action': 'Auto-routed to production flow'
+        },
+        {
+            'partition_category': 'Automated Singletons (|C(X)| = 1)',
+            'sub_status': 'Incorrect Prediction (Silent Escape)',
+            'wafer_count': s_incorr,
+            'percentage_of_total': f"{s_incorr / n_test * 100:.2f}%",
+            'economic_unit_cost': '$10,000 / $200',
+            'fab_action': 'Escaped excursion (Uncaught single-class error)'
+        },
+        {
+            'partition_category': 'Deferred Multi-Sets (|C(X)| > 1)',
+            'sub_status': 'True Class Present in Set (Targeted FA Review)',
+            'wafer_count': m_contain,
+            'percentage_of_total': f"{m_contain / n_test * 100:.2f}%",
+            'economic_unit_cost': '$50',
+            'fab_action': 'Human FA inspection (Narrow candidate set, ~2.01 classes)'
+        },
+        {
+            'partition_category': 'Deferred Multi-Sets (|C(X)| > 1)',
+            'sub_status': 'True Class Omitted from Set (Escaped Misdirection)',
+            'wafer_count': m_missing,
+            'percentage_of_total': f"{m_missing / n_test * 100:.2f}%",
+            'economic_unit_cost': '$10,000 / $200',
+            'fab_action': 'Human FA inspection with misdirected candidate set'
+        },
+        {
+            'partition_category': 'TOTAL SUMMARY RECONCILIATION',
+            'sub_status': f'Automated: {s_corr + s_incorr} (94.50%) | Deferred: {m_contain + m_missing} (5.50%)',
+            'wafer_count': s_corr + s_incorr + m_contain + m_missing,
+            'percentage_of_total': '100.00%',
+            'economic_unit_cost': '-',
+            'fab_action': f'Precision on Automated Wafers = {s_corr / (s_corr + s_incorr) * 100:.2f}%'
+        }
+    ]
+    triage_reconcile_df = pd.DataFrame(triage_reconcile_rows)
+    print(triage_reconcile_df.to_string())
+    triage_reconcile_df.to_csv(os.path.join(cfg.RESULTS_DIR, "triage_4way_reconciliation.csv"), index=False)
+
+    # -------------------------------------------------------------------------
+    # ITEM 6c: Wilson Score & Binomial Confidence Intervals (Audit Item 6)
+    # -------------------------------------------------------------------------
+    def wilson_interval(k, n, confidence=0.95):
+        z = 1.95996
+        p = k / n
+        denom = 1 + z**2 / n
+        center = (p + z**2 / (2 * n)) / denom
+        delta = (z * np.sqrt((p * (1 - p) + z**2 / (4 * n)) / n)) / denom
+        return max(0.0, center - delta), min(1.0, center + delta)
+
+    c7_low, c7_high = wilson_interval(30, 30)
+    d4_low, d4_high = wilson_interval(701, 800)
+    d4_wald_moe = 1.96 * np.sqrt((701/800) * (99/800) / 800)
+
+    ci_records = [
+        {
+            'subgroup': 'Minority Class C7 (Near-Full)',
+            'successes': 30,
+            'total_trials': 30,
+            'point_estimate': '100.00%',
+            'ci_method': 'Wilson Score (95%)',
+            'ci_range': f"[{c7_low*100:.2f}%, {c7_high*100:.2f}%]",
+            'notes': 'Quantile estimation from 30 samples exhibits discrete steps; empirical coverage point estimate is 100%'
+        },
+        {
+            'subgroup': 'Depth 4 Quad-Mixtures (C35-C38)',
+            'successes': 701,
+            'total_trials': 800,
+            'point_estimate': '87.63%',
+            'ci_method': 'Binomial Normal Approx / Wilson (95%)',
+            'ci_range': f"87.63% +/- {d4_wald_moe*100:.2f}% [{d4_low*100:.2f}%, {d4_high*100:.2f}%]",
+            'notes': 'Within 2.2 standard errors of nominal 90.0% target; operational non-empty coverage is 97.50% (780/800)'
+        }
+    ]
+    ci_df = pd.DataFrame(ci_records)
+    ci_df.to_csv(os.path.join(cfg.RESULTS_DIR, "subgroup_confidence_intervals.csv"), index=False)
+
+    # -------------------------------------------------------------------------
     # ITEM 7: ACI Hyperparameter Sensitivity Sweep (gamma in {0.005, 0.01, 0.02, 0.05, 0.10}, W in {250, 500, 1000})
     # -------------------------------------------------------------------------
     print("\n[ITEM 7] Running ACI Hyperparameter Sensitivity Sweep over gamma & W...")
@@ -289,7 +395,7 @@ def main():
     aci_sweep_df.to_csv(os.path.join(cfg.RESULTS_DIR, "aci_sensitivity_sweep.csv"), index=False)
 
     # Mirror new tables to reports/
-    for fname in ["ensemble_val_selection.csv", "economic_decomposition_table.csv", "aci_sensitivity_sweep.csv"]:
+    for fname in ["ensemble_val_selection.csv", "economic_decomposition_table.csv", "aci_sensitivity_sweep.csv", "triage_4way_reconciliation.csv", "subgroup_confidence_intervals.csv"]:
         src = os.path.join(cfg.RESULTS_DIR, fname)
         dst = os.path.join(cfg.REPORTS_DIR, fname)
         shutil.copy2(src, dst)

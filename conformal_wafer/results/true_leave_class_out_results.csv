@@ -1,0 +1,5 @@
+method,unseen_classes,empty_set_rejection_rate,id_false_rejection_rate,auroc,aupr,finite_sample_guarantee
+Standard Argmax (Literature Baseline),C35-C38 (Depth 4),0.0,0.0,0.5,0.5,No (100% Blind Guess)
+Energy Score Heuristic (Liu et al.),C35-C38 (Depth 4),0.03375,0.05,0.5221372004997794,0.985,No
+Max Softmax Probability (MSP Heuristic),C35-C38 (Depth 4),0.6875,0.05,0.9166096758782891,0.6603633016692969,No
+True Leave-Class-Out Conformal Detector (Ours),C35-C38 (Depth 4),0.65125,0.043363222107893576,0.9166096758782891,0.6603633016692969,In-Distribution Coverage Only

@@ -1,0 +1,39 @@
+class_index,class_id,class_name,defect_mix_depth,total_samples,train_samples,val_samples,cal_samples,test_samples,notes
+0,C1,Normal,0,1000,540,60,200,200,
+1,C2,Center,1,1000,540,60,200,200,
+2,C3,Donut,1,1000,540,60,200,200,
+3,C4,Edge_Loc,1,1000,540,60,200,200,
+4,C5,Edge_Ring,1,1000,540,60,200,200,
+5,C6,Loc,1,1000,540,60,200,200,
+6,C7,Near_Full,1,149,80,9,30,30,"Corrected minority class (Near-Full, 149 total maps: 30 in Cal, 30 in Test)"
+7,C8,Scratch,1,1000,540,60,200,200,
+8,C9,Random,1,866,468,52,173,173,"Corrected majority single defect (Random, 866 total maps)"
+9,C10,C+EL,2,1000,540,60,200,200,
+10,C11,C+ER,2,1000,540,60,200,200,
+11,C12,C+L,2,1000,540,60,200,200,
+12,C13,C+S,2,1000,540,60,200,200,
+13,C14,D+EL,2,1000,540,60,200,200,
+14,C15,D+ER,2,1000,540,60,200,200,
+15,C16,D+L,2,1000,540,60,200,200,
+16,C17,D+S,2,1000,540,60,200,200,
+17,C18,EL+L,2,1000,540,60,200,200,
+18,C19,EL+S,2,1000,540,60,200,200,
+19,C20,ER+L,2,1000,540,60,200,200,
+20,C21,ER+S,2,1000,540,60,200,200,
+21,C22,L+S,2,1000,540,60,200,200,
+22,C23,C+EL+L,3,1000,540,60,200,200,
+23,C24,C+EL+S,3,2000,1080,120,400,400,
+24,C25,C+ER+L,3,1000,540,60,200,200,
+25,C26,C+ER+S,3,1000,540,60,200,200,
+26,C27,C+L+S,3,1000,540,60,200,200,
+27,C28,D+EL+L,3,1000,540,60,200,200,
+28,C29,D+EL+S,3,1000,540,60,200,200,
+29,C30,D+ER+L,3,1000,540,60,200,200,
+30,C31,D+ER+S,3,1000,540,60,200,200,
+31,C32,D+L+S,3,1000,540,60,200,200,
+32,C33,EL+L+S,3,1000,540,60,200,200,
+33,C34,ER+L+S,3,1000,540,60,200,200,
+34,C35,C+L+EL+S,4,1000,540,60,200,200,Held-out unseen 4-mixed defect class for Leave-Class-Out OOD
+35,C36,C+L+ER+S,4,1000,540,60,200,200,Held-out unseen 4-mixed defect class for Leave-Class-Out OOD
+36,C37,D+L+EL+S,4,1000,540,60,200,200,Held-out unseen 4-mixed defect class for Leave-Class-Out OOD
+37,C38,D+L+ER+S,4,1000,540,60,200,200,Held-out unseen 4-mixed defect class for Leave-Class-Out OOD
