@@ -1,11 +1,12 @@
-# Conformal Wafer: Guaranteed-Coverage Prediction Sets, Online Drift Monitoring & Hybrid OOD Rejection for Mixed-Type Wafer Defect Recognition
+# Grammar-Constrained Polar Networks with Conformal Novelty Detection for Unseen Mixed-Defect Wafer Maps
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1+-ee4c2c.svg)](https://pytorch.org/)
 [![CUDA](https://img.shields.io/badge/CUDA-12.1-green.svg)](https://developer.nvidia.com/cuda-zone)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An end-to-end ML research benchmark providing the **first split conformal, online drift-adaptive (ACI), and hybrid embedding-density OOD-rejecting framework** on the **MixedWM38** semiconductor wafer defect benchmark (38 defect classes, 38,015 wafer maps).
+## 📄 Abstract
+Fabrication lines need wafer-map classifiers that know when they do not know, yet closed-set softmax recognizers return confident labels for defect compositions never seen in training. We study this on MixedWM38 by training on 34 known patterns (up to three co-occurring defects) and treating the four genuine quadruple mixtures as unseen. A flat 34-class softmax with split conformal calibration at $\alpha=0.05$ rejects only 65.13% (521/800) of them (AUROC 0.9168). We introduce **CompositionalPolarNet**, which combines equal-area polar resampling with azimuthally circular convolutions and a factorized eight-primitive attribute head constrained by a physical defect grammar. Its Library Novelty Score, the negative log probability mass placed on the known vocabulary, is conformally thresholded on a disjoint calibration set. We prove it grows linearly in the number of unseen primitives (exponentially in residual mass) whenever constituent logits exceed a margin. At $\alpha=0.05$ the method rejects **97.50% (780/800)** of unseen mixtures (AUROC 0.9941, AUPR 0.9792) while falsely rejecting **4.78% (325/6,803)** of known-pattern wafers, with **98.63%** known-class accuracy. Online adaptive conformal inference restores coverage under simulated chamber drift (89.97% vs 79.93% static), Mondrian calibration gives balanced coverage across mixture depths including the rare Near-Full class, and selective triage automates 94.50% of wafers at 99.28% precision. A cost-sensitivity analysis over 30 scenarios indicates yield-loss reductions of 44–51% under assumed costs. Encoding manufacturing grammar in the posterior, rather than only calibrating a flat softmax, is the key to trustworthy open-world defect recognition.
 
 ---
 
