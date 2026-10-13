@@ -143,7 +143,8 @@ We compared **Static Split Conformal** against **Adaptive Conformal Inference (A
 - **ACI Asymptotic Long-Run Frequency Tracking (Gibbs & Candès 2021):** Adaptive Conformal Inference (ACI) does *not* claim pointwise conditional coverage at every individual time step $t$. Instead, Gibbs & Candès prove that under arbitrary non-stationary distribution shifts, the online pinball gradient update $\alpha_{t+1} = \alpha_t + \gamma (\alpha - \text{err}_t)$ guarantees asymptotic long-run marginal coverage frequency:
   $$\lim_{T \to \infty} \frac{1}{T} \sum_{t=1}^T \text{Cov}_t = 1 - \alpha$$
   Empirically, ACI achieves **89.97% coverage during Phase 2 drift** and **90.02% overall** across all $T=7,603$ streamed wafers against the 90.00% nominal target.
-- **Operational Feedback Prerequisite:** The standard ACI formulation requires timely binary error feedback $\text{err}_t = \mathbb{I}(Y_t \notin C(X_t))$ at step $t$ to adjust $\alpha_{t+1}$. In high-volume manufacturing fabs, this assumes rapid defect confirmation (e.g., inline automated optical inspection (AOI) verification or fast sampling review). In production environments where defect confirmation incurs multi-lot review latency or batch verification delays, delayed-feedback ACI variants (e.g., Gibbs & Candès 2022 delayed ACI) must be employed.
+- **ACI Asymptotic Long-Run Frequency Tracking (Gibbs & Candès 2021, JMLR 2024):** Gibbs & Candès prove that under arbitrary non-stationary distribution shifts, the online pinball gradient update $\alpha_{t+1} = \alpha_t + \gamma (\alpha - \text{err}_t)$ guarantees asymptotic long-run marginal coverage frequency $\lim_{T \to \infty} \frac{1}{T} \sum_{t=1}^T \text{Cov}_t = 1 - \alpha$. In follow-up work, Gibbs & Candès (2022, *JMLR* 2024) introduce adaptive step-size multiscale ACI to adapt to unknown shift rates.
+- **Operational Feedback Prerequisite:** Standard ACI requires timely binary error feedback $\text{err}_t = \mathbb{I}(Y_t \notin C(X_t))$ at step $t$ to compute $\alpha_{t+1}$. In high-volume manufacturing fabs, this assumes rapid defect confirmation (e.g., inline automated optical inspection (AOI) verification or fast sampling review). In production environments where defect confirmation incurs multi-lot review latency or batch verification delays, delayed-feedback conformal inference formulations (e.g., Angelopoulos et al., 2023 on Online Conformal Prediction with Delayed Labels) must be deployed.
 - **Transparent Operational Price:** To maintain 90% coverage during severe chamber drift without backbone retraining, ACI dynamically inflates the prediction set size from **1.010 in Phase 1 to 21.508 in Phase 2**. Rather than hiding failures behind brittle top-1 predictions, this set expansion provides fab engineers with an honest, transparent signal of operational process uncertainty, prompting physical chamber maintenance.
 
 ### 5.3 ACI Hyperparameter Sensitivity Sweep (`results/aci_sensitivity_sweep.csv`)
@@ -176,17 +177,17 @@ To eliminate any potential representation leakage from training on 38 classes, w
 
 - **In-Distribution (ID) Test Performance (C1–C34, $N_{\text{id}}=6,803$):** Top-1 Accuracy = **98.46%**; Conformal Quantile ($\alpha=0.05$) $\hat{q} = 0.0382$, computed strictly on the in-distribution calibration split without touching OOD test samples.
 - **In-Distribution False Rejection Rate:** **4.34% (`295 / 6,803`)**, with an exact **Wilson 95% Confidence Interval of $[3.88\%, 4.85\%]$**, strictly satisfying the theoretical $\le 5\%$ false-alarm bound.
-- **Unseen Defect OOD Rejection (C35–C38, $N_{\text{ood}}=800$):** **65.13% (`521 / 800`) empirical empty-set rejection ($C(X) = \emptyset$)**, with **0.9166 AUROC**.
-- **AUPR Metric & Class Prevalence:** In this evaluation, the positive class is defined as Out-of-Distribution ($y = 1, N_{\text{ood}} = 800$), and the negative class is In-Distribution ($y = 0, N_{\text{id}} = 6,803$). The base class prevalence is $\pi = 800 / (6,803 + 800) = 10.52\%$, which is the performance of an uninformative random detector. Our calibrated detector achieves **$\text{AUPR} = 0.6604$**, representing a **$6.28\times$ enrichment over the random baseline rate**.
+- **Unseen Defect OOD Rejection (C35–C38, $N_{\text{ood}}=800$):** **65.13% (`521 / 800`) empirical empty-set rejection ($C(X) = \emptyset$)**, with **0.9168 AUROC**.
+- **AUPR Metric & Class Prevalence ($\pi = 10.52\%$):** In this evaluation, the positive class is defined as Out-of-Distribution ($y = 1, N_{\text{ood}} = 800$), and the negative class is In-Distribution ($y = 0, N_{\text{id}} = 6,803$). The base class prevalence is $\pi = 800 / (6,803 + 800) = 10.52\%$, which represents the baseline performance of an uninformative random detector. Our calibrated detector achieves **$\text{AUPR} = 0.6607$**, representing a **$6.28\times$ precision enrichment** over the random baseline rate.
 
-| Detection Method | Evaluated Unseen Defect Classes | Empirical Empty-Set Rejection Rate (%) | In-Dist False Rejection Rate (%) | AUROC | AUPR | Finite-Sample Guarantee? |
+| Detection Method | Evaluated Unseen Defect Classes | Empirical Empty-Set Rejection Rate (%) | In-Dist False Rejection Rate (%) | AUROC | AUPR [Base $\pi=0.1052$] | Finite-Sample Guarantee? |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Standard Argmax (Literature Baseline)** | C35–C38 (Depth 4, $N=800$) | **0.00% (100% Blind Guess)** | 0.00% | 0.5000 | 0.1052 | None (Blind 100% Miss) |
-| **Energy Score Heuristic (Liu et al.)** | C35–C38 (Depth 4, $N=800$) | 3.38% (`27 / 800`) | 5.00% | 0.5221 | 0.9850 | None |
-| **Max Softmax Probability (MSP Heuristic)**| C35–C38 (Depth 4, $N=800$) | 68.75% (`550 / 800`) | 5.00% | 0.9166 | 0.6604 | None |
-| **True Leave-Class-Out Conformal Detector (Ours)**| C35–C38 (Depth 4, $N=800$) | **65.13% (`521 / 800`)** | **4.34% (`295 / 6,803`)** | **0.9166** | **0.6604** | **In-Dist Coverage Guarantee ($\le 5\%$)** |
+| **Energy Score Heuristic (Liu et al.)** | C35–C38 (Depth 4, $N=800$) | 36.50% (`292 / 800`) | 5.00% | 0.7719 | 0.3829 | None (Uncalibrated Heuristic) |
+| **Max Softmax Probability (MSP Heuristic)**| C35–C38 (Depth 4, $N=800$) | 68.75% (`550 / 800`) | 5.00% | 0.9168 | 0.6607 | None (Heuristic Threshold) |
+| **True Leave-Class-Out Conformal Detector (Ours)**| C35–C38 (Depth 4, $N=800$) | **65.13% (`521 / 800`)** | **4.34% (`295 / 6,803`)** | **0.9168** | **0.6607** | **In-Dist Coverage Guarantee ($\le 5\%$)** |
 
-*Note on Detection Power:* At a matched in-distribution false rejection rate of 4.34%, standard argmax achieves 0.00% rejection, blindly assigning 100% of unseen quad-mixtures into known classes. Conformal empty-set rejection provides moderate empirical detection power (65.13%), demonstrating meaningful screening without requiring explicit OOD training supervision.
+*Methodological Note on Ranking vs. Calibration:* Because the nonconformity score $s(x, y) = 1 - p(y|x)$ is an exact monotonic transformation of the maximum softmax probability $\max_y p(y|x)$, the rank-ordering discrimination (AUROC = 0.9168, AUPR = 0.6607) of the conformal detector naturally matches MSP. We emphasize that conformal prediction does **not** claim superior OOD ranking; rather, its definitive scientific contribution is **guaranteed finite-sample in-distribution error control ($\le 5\%$ false rejection)** derived analytically from calibration without requiring ungrounded heuristic threshold tuning or access to OOD validation data. Conformal empty-set rejection provides moderate empirical detection power (65.13%), demonstrating actionable automated screening on unseen combinatorial defects.
 
 ### 6.2 Upper-Bound Off-Manifold Diagnostic: Synthetic Contamination Benchmark (`results/hybrid_ood_benchmark.csv`)
 For off-manifold sensor failure and gross wafer contamination ($N_{\text{ood}} = 1,000$, heavy synthetic salt-noise, edge-bars, and polarity flips), we evaluate the **Hybrid Nonconformity Score**:
@@ -300,6 +301,26 @@ To evaluate the impact of human FA review effectiveness, let $p_{\text{miss}}$ r
 
 Across the entire spectrum from complete anchoring ($p_{\text{miss}} = 1.0$) to flawless independent review ($p_{\text{miss}} = 0.0$), the conformal risk policy yields a **44.24% to 48.06% reduction in operational semiconductor loss**, confirming that the economic benefit is robust and structurally driven by intercepting 48 catastrophic escapes.
 
+
+#### 4. Two-Tier Compound Error Sensitivity Sweep (`results/cost_tiering_sensitivity.csv`)
+In semiconductor manufacturing, confusing two similar compound defects of identical complexity (e.g., C35 $\to$ C36, both Depth 4 quadruple-mixtures) involves adjacent process chambers and may incur moderate rework rather than complete lot scrap. Conversely, cross-depth confusions (e.g., Depth 4 misclassified as Depth 2 or normal) represent severe diagnostic blind spots that release multi-tool excursions into production.
+We decomposed all 104 argmax compound errors and all 56 conformal escapes into within-depth vs. cross-depth confusions:
+- **Standard Argmax (104 compound errors):** **22 within-depth confusions** vs. **82 cross-depth catastrophic escapes**.
+- **Conformal Risk Policy (56 escapes):** **14 within-depth confusions** vs. **42 cross-depth catastrophic escapes** (40 cross-depth escapes intercepted).
+
+We evaluate a two-tier cost model where cross-depth escapes remain at $C_{\text{cross}} = \$10,000$, while within-depth confusions are parameterized across $C_{\text{within}} \in [\$200, \$10,000]$:
+
+| Within-Depth Penalty ($C_{\text{within}}$) | Cross-Depth Penalty ($C_{\text{cross}}$) | Baseline Argmax Fab Loss | Conformal Risk Policy Loss | Net Dollar Savings | Percentage Loss Reduction |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| **\$200** (Equal to single confusion) | \$10,000 | \$825,800 | \$443,500 | \$382,300 | **46.29%** |
+| **\$500** (Minor chamber rework) | \$10,000 | \$832,400 | \$447,700 | \$384,700 | **46.22%** |
+| **\$1,000** (Moderate module overhaul) | \$10,000 | \$843,400 | \$454,700 | \$388,700 | **46.09%** |
+| **\$2,000** (Multi-chamber qualification) | \$10,000 | \$865,400 | \$468,700 | \$396,700 | **45.84%** |
+| **\$5,000** (Major line requalification) | \$10,000 | \$931,400 | \$510,700 | \$420,700 | **45.17%** |
+| **\$10,000** (Full catastrophic baseline) | \$10,000 | \$1,041,400 | \$580,700 | \$460,700 | **44.24%** |
+
+*Takeaway:* Across every severity tier from $C_{\text{within}} = \$200$ to $\$10,000$, the conformal risk policy consistently delivers between **44.24% and 46.29% reduction in total operational fab loss**, proving that the economic advantage is not dependent on penalizing identical-depth confusions at $\$10,000$.
+
 ### 7.6 Checklist #3: Calibration-Size Stability Sweep (`results/calibration_size_sweep.csv`)
 | Calibration Budget ($n_{\text{cal}}$) | Random Draws | Exact Coverage Mean (%) | Exact Coverage Std. Dev. (%) | Operational Coverage Mean (%) | Operational Avg Set Size |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -333,8 +354,8 @@ Across the entire spectrum from complete anchoring ($p_{\text{miss}} = 1.0$) to 
 | **Coverage-Nominal Gap Diagnostic** | None (Uncalibrated point estimates) | **Exact vs. Operational Non-Empty vs. Deterministic RAPS Decomposition** |
 | **Online Distribution Drift Tracking (N1)** | Offline static models only (e.g., TSM domain adaptation, Chou et al. 2025) | **Online ACI (Gibbs & Candès) — 89.97% Coverage Maintained Under Chamber Drift** |
 | **Wafer Defect OOD Detection (N2)** | Heuristic Mahalanobis (Kim et al. 2021), classification-OOD (Choi et al. 2023) | **Calibrated Empty-Set Rejection: 100.0% on Contamination (0.9935 AUROC)** |
-| **True Leave-Class-Out OOD (Dedicated 34-Class)**| None (100% Blind Guess on unseen defect mixtures) | **65.13% Empty-Set Rejection on Unseen C35–C38 (0.9166 AUROC, N=800)** |
+| **True Leave-Class-Out OOD (Dedicated 34-Class)**| No conformal empty-set guarantee (uncalibrated heuristic thresholds) | **65.13% Empty-Set Rejection on Unseen C35–C38 (0.9168 AUROC, 0.6607 AUPR vs $\pi=0.1052$)** |
 | **Selective Fab Triage & Routing** | None (All wafers processed unconditionally) | **94.50% Automation (7,185/7,603) at 99.28% Precision (7,133/7,185)** |
-| **Mondrian Subgroup & Minority C7 Parity** | None (Minority classes suffer silent degradation) | **Per-Depth Mondrian Parity + Wilson 95% CI $[88.65\%, 100.0\%]$ on C7** |
+| **Mondrian Subgroup & Minority C7 Calibration** | None (Minority classes suffer silent degradation) | **Per-Depth Group-Conditional Calibration + Wilson 95% CI $[88.65\%, 100.0\%]$ on C7** |
 | **Calibration Sample Efficiency Curve** | None | **Stable at $n_{\text{cal}} \ge 500$ maps ($\pm 0.80\%$ SD, ~13 maps/class)** |
 | **Semiconductor Fab Cost-Loss Control** | None | **44.24% Loss Reduction ($\$460,700$ Saved, 48 Catastrophic Escapes Intercepted)** |

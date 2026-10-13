@@ -1,3 +1,3 @@
 subgroup,successes,total_trials,point_estimate,ci_method,ci_range,notes
-"Minority Class C7 (Near-Full)",30,30,100.00%,Wilson Score (95%),"[88.65%, 100.00%]","Quantile estimation from 30 samples exhibits discrete steps of 1/(n_cal+1)=3.23%; empirical point estimate is 100.0%"
-"Depth 4 Quad-Mixtures (C35-C38)",701,800,87.63%,Binomial Normal Approx / Wilson (95%),"87.63% +/- 2.29% [85.16%, 89.73%]","Within 2.2 standard errors of nominal 90.0% target; operational non-empty coverage is 97.50% (780/800)"
+Minority Class C7 (Near-Full),30,30,100.00%,Wilson Score (95%),"[88.65%, 100.00%]",Quantile estimation from 30 samples exhibits discrete steps of 1/(n_cal+1)=3.23%; empirical point estimate is 100.0%
+Depth 4 Quad-Mixtures (C35-C38),701,800,87.63%,Binomial Normal Approx / Wilson (95%),"87.63% +/- 2.29% [85.16%, 89.73%]","Within 2.24 standard errors of nominal 90.0% target (Z = -2.24, p = 0.0251); operational non-empty coverage is 97.50% (780/800)"
