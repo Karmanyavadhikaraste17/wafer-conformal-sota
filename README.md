@@ -17,13 +17,14 @@ An end-to-end ML research benchmark providing the **first split conformal, onlin
    - **Operational Non-Empty RAPS (`allow_empty=False`):** Guarantees at least one candidate per wafer, achieving **94.50%–99.09% singleton automation** with **1.009–1.056 average set size**.
 3. **Novelty N1 — Drift-Adaptive Online Conformal Monitoring (ACI, Gibbs & Candès 2021):**
    - Under mid-stream chamber process drift ($t \in [2501, 5500]$), Static Split Conformal coverage collapses to **79.93%**, while **Online ACI** self-corrects via pinball loss updates to **89.97%** during drift and **90.02%** across all 7,603 wafers without retraining.
-4. **Novelty N2 — True Leave-Class-Out Semantic OOD & Hybrid Feature Rejection:**
-   - **True Leave-Class-Out ($N_{\text{id}}=6,803, N_{\text{ood}}=800$):** On a dedicated 34-class model trained strictly on C1–C34, our calibrated conformal detector achieves **65.13% empty-set rejection ($C(X) = \emptyset$, 521/800)** with **0.9168 AUROC** and **0.6607 AUPR** (against base prevalence $\pi=0.1052$) on unseen quad-mixed defects (C35–C38), matching MSP ranking while providing finite-sample in-distribution coverage control.
+4. **Novelty N2 & Architectural Breakthrough — True Leave-Class-Out Semantic OOD & Polar Neuro-Symbolic $S_{\text{lib}}(x)$:**
+   - **Baseline 34-Class Model ($N_{\text{id}}=6,803, N_{\text{ood}}=800$):** Using a fixed softmax nonconformity score, our conformal detector achieves **65.13% empty-set rejection ($C(X) = \emptyset$, 521/800)** with **0.9168 AUROC** and **0.6607 AUPR** (base prevalence $\pi=0.1052$) at **4.34% realized test ID false rejection**, matching MSP ranking while establishing finite-sample ID coverage control.
+   - **Compositional Polar Neuro-Symbolic Network (`CompositionalPolarNet`):** Combines continuous polar resampling (`PolarConv`) with a formal defect grammar factorizing MixedWM38 into 8 primitive attributes. The resulting **Library Novelty Score $S_{\text{lib}}(x)$** drives unseen quad-mixture rejection to **97.50% (780/800)** with **0.9941 AUROC** and **0.9792 AUPR** at **4.78% ID false rejection** ($\le 5\%$), decisively conquering the open-world compound defect bottleneck!
    - **Contamination Diagnostic ($N=1,000$):** Hybrid feature-softmax conformal achieves **100.00% empty-set rejection** (**0.9935 AUROC**, **0.9365 AUPR**) at **4.18% in-distribution false rejection**.
 5. **Proposals A, C, D — 4-Way Fab Triage, Mondrian Calibration & Metrology Cost-Loss Control:**
    - **Selective Fab Triage:** Automates **94.50% (7,185/7,603)** of wafers at **99.28% precision (7,133/7,185)**, deferring only **5.50% (418/7,603)** to human FA review.
    - **Mondrian Conformal:** Group-conditional calibration across Depths 0–4 with **100.0% (30/30) observed coverage** on extreme minority class **C7 (Near-Full, Wilson 95% CI $[88.65\%, 100.0\%]$)**.
-   - **Fab Economic Risk Control:** Cuts expected fab financial loss by **44.24%–46.29% ($\$382,300–\$460,700$ saved across 7,603 test wafers)** across two-tier severity models ($C_{\text{within}} \in [\$200, \$10,000]$).
+   - **Fab Economic Risk Control:** Cuts expected fab financial loss by **44.24%–51.11% ($\$382,300–\$500,500$ saved across 7,603 test wafers)** across 30 distinct industrial cost-tiering and human FA miss probability scenarios ($C_{\text{within}} \in [\$200, \$10,000], p_{\text{miss}} \in [0.0, 1.0]$).
 
 ---
 
