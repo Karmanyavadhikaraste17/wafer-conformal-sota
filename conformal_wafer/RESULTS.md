@@ -143,10 +143,15 @@ We streamed all $T = 7,603$ held-out test wafers sequentially across three fab o
      This flattens peak confidence from $>0.98$ down toward the simplex center, directly challenging exchangeability.
 4. **Independent Random Seed Repetitions & Sensitivity Sweeps:**
    - To strictly distinguish independent stochastic repetitions from hyperparameter sweeps, the production system ($\gamma = 0.02, W = 500$) was evaluated across **5 independent random seed repetitions** ($\text{seed} \in \{42, 101, 2024, 777, 999\}$), generating independent perturbation arrival sequences and Dirichlet noise realizations (`results/aci_seed_repetitions.csv`):
-     * **Online ACI Overall Coverage (5 seeds):** **$89.99\% \pm 0.02\%$** (individual seeds: 90.02%, 89.96%, 89.99%, 89.99%, 89.99%).
-     * **Online ACI Phase 2 Drift Coverage (5 seeds):** **$89.96\% \pm 0.05\%$** (individual seeds: 89.97%, 90.00%, 89.97%, 90.00%, 89.87%).
-     * **Static Split Conformal Overall Coverage (5 seeds):** **$86.15\% \pm 0.46\%$** (individual seeds: 85.80%, 86.95%, 85.68%, 85.91%, 86.43%).
-     * **Static Split Conformal Phase 2 Drift Coverage (5 seeds):** **$80.54\% \pm 0.70\%$** (collapses to ~80% in every seed: 79.93%, 81.77%, 79.97%, 80.23%, 80.80%).
+
+| Evaluated Stream Statistic | Mean | Sample SD ($s$, $n-1$) | Population SD ($\sigma$, $n$) | Reported Summary ($\bar{x} \pm s$) | Individual Seed Values ($\text{seed} \in \{42, 101, 2024, 777, 999\}$) |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Online ACI Phase 2 Drift Coverage** | **89.96%** | **0.054%** | 0.048% | **$89.96\% \pm 0.05\%$** | 89.97%, 90.00%, 89.97%, 90.00%, 89.87% |
+| **Online ACI Overall Stream Coverage** | **89.99%** | **0.021%** | 0.019% | **$89.99\% \pm 0.02\%$** | 90.02%, 89.96%, 89.99%, 89.99%, 89.99% |
+| **Static Conformal Phase 2 Drift Coverage** | **80.54%** | **0.770%** | 0.689% | **$80.54\% \pm 0.77\%$** | 79.93%, 81.77%, 79.97%, 80.23%, 80.80% |
+| **Static Conformal Overall Stream Coverage** | **86.15%** | **0.529%** | 0.473% | **$86.15\% \pm 0.53\%$** | 85.80%, 86.95%, 85.68%, 85.91%, 86.43% |
+
+   *Standard Deviation Convention Note:* The $\pm$ notation explicitly denotes the sample standard deviation $s = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2}$ across $n=5$ independent seeds ($n-1=4$ degrees of freedom). For complete transparency, both sample standard deviation $s$ and population standard deviation $\sigma = \sqrt{\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2}$ are tabulated above. All individual seed values are preserved in `results/aci_seed_repetitions.csv`.
    - In addition, hyperparameter insensitivity is certified across a 15-configuration grid sweep: 5 adaptation rates $\gamma \in \{0.005, 0.01, 0.02, 0.05, 0.10\}$ across 3 buffer sizes $W \in \{250, 500, 1000\}$ (`results/aci_sensitivity_sweep.csv`).
 5. **Prequential Binary Error Indicator vs. Rolling FIFO Buffer:**
    - The error term $\text{err}_t = \mathbb{I}(y_t \notin C_t(x_t)) \in \{0, 1\}$ is the **instantaneous, prequential binary miscoverage indicator** evaluated at time step $t$ using the prediction set $C_t(x_t)$ *before* observing ground-truth label $y_t$. It is strictly *not* a smoothed or windowed moving average.
@@ -158,7 +163,7 @@ We streamed all $T = 7,603$ held-out test wafers sequentially across three fab o
 We compared **Static Split Conformal** (fixed $\alpha_t = \alpha_0 = 0.10$ from calibration) against **Adaptive Conformal Inference (ACI, Gibbs & Candès 2021)** ($\alpha_0 = 0.10, \gamma = 0.02, W = 500$):
 
 | Fab Stream Regime | Wafers ($N$) | Target Coverage | Static Split Conformal Coverage (%) | Online ACI Coverage (%) | Static Avg Set Size | Online ACI Avg Set Size | Mean Effective $\alpha_t$ |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Phase 1: Clean Stationary ($t=1\dots 2500$)** | 2,500 | 90.00% | 89.68% | **90.04%** | 1.007 | 1.010 | 0.1020 |
 | **Phase 2: Chamber Drift Shift ($t=2501\dots 5500$)** | 3,000 | 90.00% | **79.93% (Collapses)** | **89.97% (Self-Corrects)** | 5.950 | 21.508 | 0.0917 |
 | **Phase 3: Post-Maintenance Recovery ($t=5501\dots 7603$)** | 2,103 | 90.00% | 89.54% | **90.06%** | 1.012 | 1.163 | 0.1126 |
@@ -201,19 +206,6 @@ To evaluate stability under varying buffering budgets, we swept adaptation learn
 *Sensitivity Analysis & Stability Regime:*
 - Across all 12 configurations with moderate learning rates $\gamma \le 0.05$, overall stream coverage tracks tightly within **$[89.83\%, 90.02\%]$** (absolute tracking error $\le 0.17\%$). The production setting ($W=500, \gamma=0.02$) reproduces the primary run figures exactly (Phase 2: 89.97%, Phase 3: 90.06%, Overall: 90.02%).
 - For aggressive step size $\gamma = 0.10$, tracking exhibits minor steady-state jitter ($89.29\%\text{--}89.45\%$, error $0.55\%\text{--}0.71\%$), illustrating the fundamental adaptation-versus-stability trade-off (Gibbs & Candès 2021) and establishing $\gamma \in [0.01, 0.05]$ as the operationally recommended configuration for fab deployment.
-
----: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 250 | 0.005 | 89.96% | 89.97% | 90.11% | **90.00%** | 0.00% |
-| 250 | 0.010 | 90.00% | 89.93% | 90.11% | **90.00%** | 0.00% |
-| 250 | 0.020 | 90.04% | 89.93% | 90.06% | **90.00%** | 0.00% |
-| 500 | 0.005 | 90.04% | 89.90% | 90.16% | **90.02%** | +0.02% |
-| 500 | 0.010 | 90.04% | 89.90% | 90.11% | **90.00%** | 0.00% |
-| **500 (Production)** | **0.020** | **90.04%** | **89.90%** | **90.16%** | **90.02%** | **+0.02%** |
-| 500 | 0.050 | 90.00% | 89.70% | 90.06% | **89.90%** | -0.10% |
-| 1000 | 0.010 | 90.00% | 89.97% | 90.11% | **90.02%** | +0.02% |
-| 1000 | 0.020 | 90.04% | 89.87% | 90.11% | **89.99%** | -0.01% |
-
-*Finding:* Overall stream coverage tracks within $[89.90\%, 90.02\%]$ across all configurations with $\gamma \le 0.05$, validating distribution-free stability under varying fab buffering budgets.
 
 ---
 
