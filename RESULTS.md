@@ -227,6 +227,7 @@ To eliminate any potential representation leakage from training on 38 classes, w
 | **Max Softmax Probability (MSP)** | C35–C38 (Depth 4, $N=800$) | 69.00% (`552 / 800`) | 5.04% (`343 / 6,803`) [$4.54\%, 5.59\%$] | 0.9168 | 0.6607 | None (Heuristic Cutoff: $p_{\max} < 0.970642$) |
 | **True Leave-Class-Out Conformal (Ours)**| C35–C38 (Depth 4, $N=800$) | **65.13% (`521 / 800`)** | **4.32% (`294 / 6,803`)** [$3.86\%, 4.83\%$] | **0.9168** | **0.6607** | **In-Dist Coverage Guarantee (Cutoff: $p_{\max} < 0.961712$)** |
 
+*(Footnote on Energy Baseline Rejection Count):* The count 295 in the Energy Score row represents 295 / 800 unseen Depth 4 quad-mixture defect wafers successfully rejected (36.88% empty-set rejection power), which is distinct from the in-distribution test count (harmonized to exactly 294 / 6,803 for Conformal, and 343 / 6,803 for MSP).
 
 *Exact Numerical Reconciliation of Nonconformity Quantiles, Probability Cutoffs & Rejection Counts (Resolving Finding C1):*
 Nonconformity scores are defined such that higher scores indicate greater anomaly: $s \in [0, 1]$. An input is rejected (empty prediction set $C(x) = \emptyset$) when its nonconformity score exceeds the calibration quantile $\hat{q}$:
@@ -321,6 +322,8 @@ $$\text{(iii)} \quad S_{\text{lib}}(x) \; \ge \; -\log(1 - \sigma(\tau)^n) \; \g
 $$\tau^\star(\hat{q}_{\text{lib}}) = \sigma^{-1}\Big(\big(1 - e^{-\hat{q}_{\text{lib}}}\big)^{1/4}\Big) = -0.7694$$
 Whenever all 4 constituent primitives achieve logit margin $\tau > \tau^\star = -0.7694$ (detector probability $\sigma(\tau^\star) \approx 0.3166$), $S_{\text{lib}}(x) > \hat{q}_{\text{lib}}$ is guaranteed, triggering empty-set rejection $C(x) = \emptyset$.
 *Audit of the 20 Unrejected Wafers:* All 20 unrejected C35--C38 wafers have a Loc or Scratch logit below $-0.77 < \tau^\star$, confirming the contrapositive of Corollary 1: every non-rejection implies that at least one constituent primitive fails the margin condition ($l_k \le \tau^\star = -0.7694$). (Note that Corollary 1 provides a deterministic sufficient condition conditional on the realized threshold $\hat{q}_{\text{lib}}$, whereas Lemma 1 provides the marginal in-distribution false-alarm bound).
+
+- **Empirical Verification Plot (`figures/margin_vs_slib_ood.png`):** Scatter visualization of all $N = 800$ unseen Depth 4 quad-mixture test wafers against the Theorem 1 Bound (iii) curve $S_{\rm lib} \ge -\log(1 - \sigma(\tau)^4)$ and the Corollary 1 margin cutoff $\tau^\star = -0.7694$. All 780 rejected wafers satisfy $\min_{k \in A} l_k(x) > \tau^\star$ and lie strictly on or above the bound curve, while all 20 unrejected boundary misses satisfy $\min_{k \in A} l_k \le -0.77 < \tau^\star$ and $S_{\rm lib} < \hat{q}_{\rm lib}$. As observed empirically, the analytical lower bound is loose since most points sit well above the curve (because the bound represents a worst-case independent lower bound over active primitives).
 
 **Proposition 2 (Low Score on In-Library Patterns):** For any in-library wafer $z^\star \in \mathcal{V}_{\text{known}}$ where active logits satisfy $l_k \ge \tau$ and inactive logits satisfy $l_k \le -\tau'$:
 $$0 \le S_{\text{lib}}(x) \le -\log q_\theta(z^\star \mid x) \le n e^{-\tau} + (8 - n) e^{-\tau'} \xrightarrow{\tau, \tau' \to \infty} 0$$
