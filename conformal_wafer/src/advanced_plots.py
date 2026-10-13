@@ -167,7 +167,7 @@ def plot_hybrid_ood_comparison(ood_df, roc_data, save_path=None):
     ax2.set_xticklabels(short_names, fontsize=10.5, fontweight='bold')
     ax2.set_ylabel("Empty-Set Rejection Rate at 5% FPR (%)", fontsize=11.5, fontweight='bold')
     ax2.set_ylim(0, 112)
-    ax2.set_title("B. Certified Empty-Set Rejection: Covariate & Semantic OOD", fontsize=12.5, fontweight='bold')
+    ax2.set_title("B. Conformally Calibrated Empty-Set OOD Rejection", fontsize=12.5, fontweight='bold')
     ax2.legend(loc='upper left', frameon=True, facecolor='white', fontsize=9.5)
 
     for bar in b1:

@@ -1,0 +1,7 @@
+event_category,unit_cost,argmax_event_count,argmax_total_cost,conformal_event_count,conformal_total_cost,event_delta,cost_delta
+Compound Defect Excursion Escape (Catastrophic),"$10,000",104,"$1,040,000",56,"$560,000",-48,"-$480,000"
+Single-Defect Suboptimal Recipe Confusion,$200,7,"$1,400",0,$0,-7,"-$1,400"
+False Alarm on Normal Wafer (Clean Die),$50,0,$0,0,$0,0,$0
+Human Failure Analysis (FA) Inspection Deferral,$50,0,$0,414,"$20,700",414,"+$20,700"
+Zero-Touch Automated Correct Classification,$0,7492,$0,7133,$0,-359,$0
+"TOTAL FAB OPERATIONAL LOSS (7,603 WAFERS)",-,7603,"$1,041,400",7603,"$580,700",0,"-$460,700"
