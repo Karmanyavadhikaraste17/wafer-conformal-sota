@@ -18,7 +18,7 @@ An end-to-end ML research benchmark providing the **first split conformal, onlin
 3. **Novelty N1 — Drift-Adaptive Online Conformal Monitoring (ACI, Gibbs & Candès 2021):**
    - Under mid-stream chamber process drift ($t \in [2501, 5500]$), Static Split Conformal coverage collapses to **79.93%**, while **Online ACI** self-corrects via pinball loss updates to **89.97%** during drift and **90.02%** across all 7,603 wafers without retraining.
 4. **Novelty N2 — True Leave-Class-Out Semantic OOD & Hybrid Feature Rejection:**
-   - **True Leave-Class-Out ($N_{\text{id}}=6,803, N_{\text{ood}}=800$):** On a dedicated 34-class model trained strictly on C1–C34, our calibrated conformal detector achieves **65.12% empty-set rejection ($C(X) = \emptyset$, 521/800)** with **0.9166 AUROC** on unseen quad-mixed defects (C35–C38), whereas standard argmax blindly assigns 100% of samples to known classes.
+   - **True Leave-Class-Out ($N_{\text{id}}=6,803, N_{\text{ood}}=800$):** On a dedicated 34-class model trained strictly on C1–C34, our calibrated conformal detector achieves **65.13% empty-set rejection ($C(X) = \emptyset$, 521/800)** with **0.9166 AUROC** on unseen quad-mixed defects (C35–C38), whereas standard argmax blindly assigns 100% of samples to known classes.
    - **Contamination Diagnostic ($N=1,000$):** Hybrid feature-softmax conformal achieves **100.00% empty-set rejection** (**0.9935 AUROC**, **0.9365 AUPR**) at **4.18% in-distribution false rejection**.
 5. **Proposals A, C, D — 4-Way Fab Triage, Mondrian Subgroup Parity & Metrology Cost-Loss Control:**
    - **Selective Fab Triage:** Automates **94.50% (7,185/7,603)** of wafers at **99.28% precision (7,133/7,185)**, deferring only **5.50% (418/7,603)** to human FA review.
