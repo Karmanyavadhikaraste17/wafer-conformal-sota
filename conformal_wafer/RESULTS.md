@@ -181,18 +181,36 @@ To eliminate any potential representation leakage from training on 38 classes, w
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Standard Argmax (Literature Baseline)** | C35–C38 (Depth 4, $N=800$) | **0.00% (100% Blind Guess)** | 0.00% | 0.5000 | 0.1052 | None (Blind 100% Miss) |
 | **Energy Score Heuristic (Liu et al.)** | C35–C38 (Depth 4, $N=800$) | 36.88% (`295 / 800`) | 5.12% (`348 / 6,803`) [$4.61\%, 5.66\%$] | 0.7719 | 0.3829 | None (Heuristic Threshold) |
-| **Max Softmax Probability (MSP Heuristic)**| C35–C38 (Depth 4, $N=800$) | 69.00% (`552 / 800`) | 5.06% (`344 / 6,803`) [$4.56\%, 5.60\%$] | 0.9168 | 0.6607 | None (Heuristic Threshold) |
-| **True Leave-Class-Out Conformal Detector (Ours)**| C35–C38 (Depth 4, $N=800$) | **65.13% (`521 / 800`)** | **4.34% (`295 / 6,803`)** [$3.88\%, 4.85\%$] | **0.9168** | **0.6607** | **In-Dist Coverage Guarantee ($\le 5\%$)** |
+| **Max Softmax Probability (MSP)** | C35–C38 (Depth 4, $N=800$) | 69.00% (`552 / 800`) | 5.04% (`343 / 6,803`) [$4.54\%, 5.59\%$] | 0.9168 | 0.6607 | None (Heuristic Cutoff: $p_{\max} < 0.970642$) |
+| **True Leave-Class-Out Conformal (Ours)**| C35–C38 (Depth 4, $N=800$) | **65.13% (`521 / 800`)** | **4.32% (`294 / 6,803`)** [$3.86\%, 4.83\%$] | **0.9168** | **0.6607** | **In-Dist Coverage Guarantee (Cutoff: $p_{\max} < 0.961712$)** |
 
 
-*Exact Numerical Reconciliation of Conformal vs. MSP Cutoffs & Counts:*
-A referee correctly observes that because conformal empty-set decision $C(x) = \emptyset$ occurs when $\max_y p(y \mid x) < 1 - \hat{q}$, an identical probability cutoff must yield identical wafer rejection counts. We document the exact full-precision calibration derivations explaining the 31-wafer delta in Table 6.1:
-1. **Conformal Quantile Derivation (True-Label Calibration):** Standard split conformal prediction evaluates the nonconformity score on the ground-truth label: $s(x_i, y_i) = 1 - p(y_i \mid x_i)$. On the 34-class calibration split ($N_{\text{cal}} = 6,803$), misclassified calibration samples ($y_i \neq \arg\max_y p$) exhibit large nonconformity scores, pushing the 95th calibration quantile to $\hat{q}_{\text{conformal}} = 0.961712$ (or maximum probability cutoff $\tau_{\text{conformal}} = 1 - \hat{q} = 0.038288$). Under this cutoff, test ID false rejection is 4.34% (`295 / 6,803`) and unseen OOD rejection is **65.13% (`521 / 800`)**.
-2. **MSP Cutoff Derivation (Unlabeled Max-Probability Calibration):** MSP is an unsupervised heuristic that ignores true labels and sets its threshold directly on the maximum predicted probability score: $s_{\text{MSP}}(x_i) = 1 - \max_y p(y \mid x_i)$. The 95th percentile of this unlabelled score on calibration is $\hat{\tau}_{\text{MSP}} = 0.970642$ (or cutoff $\tau = 0.029358$). Because $\hat{\tau}_{\text{MSP}} > \hat{q}_{\text{conformal}}$ (by $0.00893$), MSP adopts a slightly more aggressive rejection threshold, realizing 5.06% (`344 / 6,803`) test ID false rejection and **69.00% (`552 / 800`)** OOD rejection.
-3. **Exact Equivalence at Matched Operating Point:** When evaluated at the *exact same numerical cutoff*, decisions are 100% identical:
-   - At $\tau = 0.038288$ ($\hat{q}_{\text{conformal}}$): MSP and Conformal both reject **exactly 521 of 800** OOD wafers (65.13%) and **295 of 6,803** ID wafers (4.34%).
-   - At $\tau = 0.029358$ ($\hat{\tau}_{\text{MSP}}$): MSP and Conformal both reject **exactly 552 of 800** OOD wafers (69.00%) and **344 of 6,803** ID wafers (5.06%).
-   Thus, rank ordering is strictly identical (AUROC = 0.9168, AUPR = 0.6607). Conformal prediction's scientific contribution is not superior heuristic ranking, but **finite-sample in-distribution error control derived analytically from calibration** without arbitrary threshold guessing.
+*Exact Numerical Reconciliation of Nonconformity Quantiles, Probability Cutoffs & Rejection Counts (Resolving Finding C1):*
+Nonconformity scores are defined such that higher scores indicate greater anomaly: $s \in [0, 1]$. An input is rejected (empty prediction set $C(x) = \emptyset$) when its nonconformity score exceeds the calibration quantile $\hat{q}$:
+$$C(x) = \emptyset \iff \min_y (1 - p(y \mid x)) > \hat{q} \iff 1 - \max_y p(y \mid x) > \hat{q} \iff \max_y p(y \mid x) < 1 - \hat{q}$$
+We report the exact, verified quantiles from the frozen model checkpoint (`dapnet_34class_best.pt`) on calibration ($N_{\text{cal}} = 6,803$) and test ($N_{\text{id}} = 6,803, N_{\text{ood}} = 800$):
+
+1. **Conformal Supervised Quantile:** Conformal prediction evaluates the true-label nonconformity score $s(x_i, y_i) = 1 - p(y_i \mid x_i)$. Because calibration classification errors ($y_i \neq \arg\max_y p$) yield large nonconformity values, the 95th quantile of $s(x_i, y_i)$ is:
+   $$\hat{q}_{\text{conformal}} = \mathbf{0.038288}$$
+   The corresponding rejection condition on maximum class probability is:
+   $$\max_y p(y \mid x) < 1 - \hat{q}_{\text{conformal}} = 1 - 0.038288 = \mathbf{0.961712}$$
+   Under this cutoff $\max_y p < 0.961712$:
+   - In-Distribution False Rejection: **294 / 6,803 = 4.32%** (Wilson 95% CI: $[3.86\%, 4.83\%]$).
+   - Unseen OOD Rejection (C35–C38): **521 / 800 = 65.13%** (Wilson 95% CI: $[61.76\%, 68.36\%]$).
+
+2. **MSP Unsupervised Quantile:** MSP sets its nonconformity score directly on the maximum predicted probability without labels: $s_{\text{MSP}}(x_i) = 1 - \max_y p(y \mid x_i)$. Because $1 - p(y_i \mid x_i) \ge 1 - \max_y p(y \mid x_i)$ pointwise for every sample, the MSP quantile is strictly smaller:
+   $$\hat{q}_{\text{MSP}} = \mathbf{0.029358} \quad (< 0.038288)$$
+   The corresponding rejection condition on maximum class probability is:
+   $$\max_y p(y \mid x) < 1 - \hat{q}_{\text{MSP}} = 1 - 0.029358 = \mathbf{0.970642}$$
+   Under this cutoff $\max_y p < 0.970642$:
+   - In-Distribution False Rejection: **343 / 6,803 = 5.04%** (Wilson 95% CI: $[4.54\%, 5.59\%]$).
+   - Unseen OOD Rejection (C35–C38): **552 / 800 = 69.00%** (Wilson 95% CI: $[65.73\%, 72.11\%]$).
+
+3. **Mathematical Ordering & Monotonicity:** Because $0.961712 < 0.970642$, the rejection event for Conformal is a strict subset of the rejection event for MSP:
+   $$\{\max_y p < 0.961712\} \subset \{\max_y p < 0.970642\}$$
+   Therefore, MSP's probability cutoff **must reject more wafers than Conformal's probability cutoff**, confirming that:
+   $$\mathbf{521 < 552 \quad \text{on OOD}} \quad \text{and} \quad \mathbf{294 < 343 \quad \text{on ID}}$$
+   The previous draft erroneously inverted the probability cutoff subtraction ($p_{\max} < \hat{q}$ instead of $p_{\max} < 1 - \hat{q}$), creating an apparent contradiction. With the correct definition $\max_y p < 1 - \hat{q}$, all quantiles, probability cutoffs, and rejection counts are in exact mathematical alignment.
 
 ### 6.2 Architectural Exploration: Compositional Polar Neuro-Symbolic Network with Library Novelty $S_{\text{lib}}(x)$ (`results/compositional_polar_results.csv`)
 *Methodological Status Disclosure:* We explicitly designate the CompositionalPolarNet benchmark on C35--C38 as an **exploratory post-hoc development evaluation** on the canonical MixedWM38 split. Because the architecture was motivated by analyzing the closed-world softmax bottleneck observed in Section 6.1, confirmatory generalization to arbitrary unseen mixtures will require future evaluation on freshly synthesized multi-tool defect topologies. Within the canonical benchmark, however, this model demonstrates the profound impact of encoding circular domain geometry and formal grammatical attribute factorization.
@@ -293,14 +311,15 @@ To reconcile the operational triage partition with the semiconductor cost-loss a
 *Protocol Distinction Disclosure:* Unlike Section 6 (which evaluates an open-set 34-class leave-class-out model), this experiment evaluates a **closed-set 38-class deployed model** where all 38 defect classes (including C35–C38) are represented in training, validation, and calibration ($N_{\text{cal}} = 7,603$, with 800 calibration maps in Depth 4).
 We evaluate per-depth Mondrian calibration and isolate minority class **C7 Near-Full** at $\alpha = 0.10$ (`figures/mondrian_vs_marginal_coverage.png`).
 
-| Subgroup / Stratum | Calibration ($n_{\text{cal}}$) | Test ($n_{\text{test}}$) | Marginal Exact Cov (%) | Mondrian Exact Cov (%) | Marginal Non-Empty Cov (%) [Avg Size] | Mondrian Non-Empty Cov (%) [Avg Size] | Group Quantile ($\hat{q}_d$) |
+| Subgroup / Stratum | Calibration ($n_{\text{cal}}$) | Test ($n_{\text{test}}$) | Marginal Exact Cov (%) | Mondrian Exact Cov (%) | Marginal Non-Empty Sets ($|C| \ge 1$) [Avg Size] | Mondrian Non-Empty Sets ($|C| \ge 1$) [Avg Size] | Group Quantile ($\hat{q}_d$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Depth 0 (Normal C1)** | 200 | 200 | 89.00% (`178/200`) | **89.50% (`179/200`)** | 100.00% (`200/200`) [1.000] | **100.00% (`200/200`) [1.000]** | 0.8916 |
 | **Depth 1 (Single C2–C9)** | 1,403 | 1,403 | 91.59% (`1,285/1,403`) | **89.74% (`1,259/1,403`)** | 99.50% (`1,396/1,403`) [1.006] | **99.71% (`1,399/1,403`) [1.007]** | 0.8967 |
+| ↳ *Minority Class C7 (Near-Full)*** | *30* | *30* | *100.00% (`30/30`)* | ***100.00% (`30/30`)*** | *100.00% (`30/30`) [1.000]* | ***100.00% (`30/30`) [1.067]*** | *0.9266* |
 | **Depth 2 (2-Mixed C10–C22)** | 2,600 | 2,600 | 90.92% (`2,364/2,600`) | **91.15% (`2,370/2,600`)** | 99.04% (`2,575/2,600`) [1.008] | **99.15% (`2,578/2,600`) [1.008]** | 0.9074 |
 | **Depth 3 (3-Mixed C23–C34)** | 2,600 | 2,600 | 89.04% (`2,315/2,600`) | **91.73% (`2,385/2,600`)** | 98.08% (`2,550/2,600`) [1.009] | **98.42% (`2,559/2,600`) [1.015]** | 0.9168 |
 | **Depth 4 (4-Mixed C35–C38)** | 800 | 800 | 89.38% (`715/800`) | **87.63% (`701/800`)** | 97.25% (`778/800`) [1.005] | **97.50% (`780/800`) [1.010]** | 0.9093 |
-| **Minority Class C7 (Near-Full)*** | 30 | 30 | 100.00% (`30/30`) | **100.00% (`30/30`)** | 100.00% (`30/30`) [1.000] | **100.00% (`30/30`) [1.067]** | 0.9266 |
+| **TOTAL 5 DISJOINT STRATA** | **7,603** | **7,603** | **90.19% (`6,857/7,603`)** | **90.67% (`6,894/7,603`)** | **98.63% (`7,499/7,603`) [1.007]** | **98.86% (`7,516/7,603`) [1.009]** | - |
 
 *Multiple Testing Disclosure:* Across the 5 evaluated depth groups, applying a Bonferroni correction for multiple comparisons sets the family-wise significance threshold to $\alpha_{\text{FWER}} = 0.10 / 5 = 0.02$ ($98.0\%$ target). Under this threshold, Depth 4's observed p-value ($p = 0.0251$) does not represent a statistically rejected hypothesis after adjustment.
 
