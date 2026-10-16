@@ -1,5 +1,48 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+
+# PyTorch checkpoints and model weights (prevent GitHub >100MB rejection)
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.onnx
+
+# Large binary dataset arrays and evaluation caches
+*.npz
+*.npy
+*.h5
+*.hdf5
 conformal_wafer/data/*.npz
-conformal_wafer/checkpoints/*.pt
+dapnet_cal_test_eval.npz
+
+# Presentations and intermediate PPTX copies (keep repo code-focused)
+*.pptx
+*.key
+*.pdf
+
+# Large archives (except clean_results zip if needed, or exclude all zip)
+*.zip
+!clean_results/DualCoord_Wafer_Clean_Results.zip
+
+# Temporary renders, scratch, and cache directories
+scratch/
+conformal_wafer/scratch/
+anara_renders/
+slide_renders/
+slide_renders_v4/
+figures_ultra_clean/
+temp_*
+crop*.png
+test_*.png
+*.tmp
+.cache/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~

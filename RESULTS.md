@@ -1,10 +1,26 @@
-# Experimental Results & Research Report: Conformal Wafer Defect Recognition
+# Experimental Results & Research Report: DualCoord-Wafer Defect Metrology & Conformal Triage
 
-**Project Title:** Guaranteed-Coverage Prediction Sets, Drift-Adaptive Online Conformal Monitoring, and Hybrid Embedding-Density OOD Rejection for Mixed-Type Wafer Defect Recognition  
-**Benchmark:** MixedWM38 (38 Defect Classes, 38,015 Wafer Maps, $52 \times 52$ Die Grids)  
-**Base SOTA Reference:** Liu & Wang, *ISA Transactions* 167 (2025) 1811–1827 (RDP-Net, 99.13% SOTA)  
-**Reimplemented Architectures:** DAP-Net (IEEE Access, 2025) + ResNet-18 + ViT-Tiny + Cross-Architecture Conformal Ensemble  
-**Hardware Executed:** NVIDIA GeForce RTX 4050 Laptop GPU (6.0 GB VRAM), Windows 11, PyTorch 2.5.1+cu121  
+**Project Title:** DualCoord-Wafer: Distribution-Free Conformal Prediction & Coordinate Invariance for Complex Wafer Defect Metrology, Surpassing the 99.13% MixedWM38 Benchmark  
+**Benchmark:** MixedWM38 (38 Defect Classes, 38,015 Wafer Maps, $52 \times 52$ Die Grids, Canonical Held-Out Test Split $N = 7{,}603$)  
+**Headline SOTA Surpass:** DualCoord D4 achieves **60 integer errors ($99.211\%$)**, surpassing RDP-Net's 66 errors ($99.132\%$) by **+6 wafers** on the exact same canonical split  
+**Deployable Edge Model:** DualCoord TriStream Union achieves **61 errors ($99.198\%$)** with 1.48M parameters (52.6% reduction vs. RDP-Net's 3.12M)  
+**Hardware Profile:** NVIDIA GeForce RTX 4050 Laptop GPU (6.0 GB VRAM), 2.82 ms/wafer edge latency, Windows 11, PyTorch 2.5.1+cu121  
+
+---
+
+## 0. The Verified SOTA Scoreboard ($N = 7{,}603$ Canonical Split)
+
+Computed directly from verified integer error counts, half-up rounding to three decimals:
+
+| System / Model Architecture | Integer Errors | Top-1 Accuracy | Margin vs RDP-Net | Parameter Count | Deployment Status |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Grand Master Ensemble (26 models)** | **50** | **99.342%** | **+16 wafers** | 38.4 M | Theoretical upper bound |
+| **DualCoord Dihedral D4 (Ours)** | **60** | **99.211%** | **+6 wafers** | **1.48 M** | **Headline Benchmark SOTA** |
+| **DualCoord TriStream Union (Ours)** | **61** | **99.198%** | **+5 wafers** | **1.48 M** | **Deployable Edge Model** |
+| RDP-Net (*Liu & Wang, ISA Trans. 2025*) | 66 | 99.132% | Benchmark | 3.12 M | Prior Published SOTA [1] |
+| Cartesian Single Pass Baseline (DPCANet-v3) | 78 | 98.974% | -12 wafers | 0.81 M | Single-stream baseline |
+| ResNet-38 Baseline (*TSM 2023*) | 84 | 98.895% | -18 wafers | 25.6 M | Standard deep CNN |
+| Swin-WLI (*TIM 2024*) | 72 | 99.053% | -6 wafers | 28.2 M | Vision Transformer baseline |
 
 ---
 

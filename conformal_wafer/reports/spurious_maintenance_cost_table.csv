@@ -1,0 +1,3 @@
+Decision_Policy,Catastrophic_Escapes_Cost,Recipe_Confusion_Cost,FA_Inspection_Cost,Spurious_Maintenance_Events,Spurious_Maintenance_Cost,Total_Fab_Operational_Loss
+Standard SOTA Argmax Point-Predictor,730000,1400,0,29,14500,745900
+Conformal Risk Triage Policy (alpha=0.01),560000,0,20700,0,0,580700

@@ -1,0 +1,5 @@
+run_id,architecture,params,val_acc,test_acc_single,test_acc_d4tta,errors_7603,gap_to_rdpnet,notes
+EXP-00,DPCANet-v2 (Baseline),679k,99.277,98.790,98.856,87,-21,Baseline DPCANet-v2 on canonical 80/20 split
+EXP-01,HFEdgeDPCANet,712k,99.112,98.619,98.764,94,-28,Sobel+Laplacian stream + EPCA + Dual-head
+EXP-02,DPCANet + HFEdgeDPCANet Blend,1391k,99.310,98.816,98.882,85,-19,Soft-voting optimal blend
+EXP-03,Margin-Gated Disentangled Ensemble,1391k,99.342,98.842,98.908,83,-17,Margin <= 0.20 and missing primitive conf >= 0.60

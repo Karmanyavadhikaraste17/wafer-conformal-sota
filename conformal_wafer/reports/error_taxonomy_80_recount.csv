@@ -1,0 +1,5 @@
+Category,Condition,Count,Percentage_of_Errors,Fab_Operational_Risk
+1-Primitive Under-Prediction Omission,"predicted subset true, |true| = |pred| + 1",53,66.25,Undetected secondary defect escapes to packaging (Catastrophic Lot Scrap)
+1-Primitive Over-Prediction Hallucination,"true subset predicted, |pred| = |true| + 1",10,12.5,Spurious maintenance triggered on healthy equipment (False Alarm Chamber Teardown)
+Cross-Defect / Multi-Primitive Substitution,Hamming distance >= 2,17,21.25,Incorrect tool chamber recalibrated (Diagnostic Misdirection)
+TOTAL DETERMINISTIC TEST ERRORS,argmax(y_pred) != y_true,80,100.0,Point-predictor failure surface (Benchmark Top-1 = 98.948%)

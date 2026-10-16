@@ -1,0 +1,7 @@
+Model Architecture,Parameters,Single Forward (%),D4-TTA (%),"Errors (/7,603)",Delta vs RDP-Net (%),Status
+DAP-Net (Benchmark Backbone),875k,98.6,98.74,106,-0.53,BASELINE
+"RDP-Net (Liu & Wang, ISA Trans. 2025)","1,120k",99.13,99.13,66,0.0,PRIMARY SOTA
+DPCANet-v2 (Dynamic Multi-Scale),679k,98.79,98.856,87,-0.274,COMPACT SOTA
+PolarNet-v2 (Continuous Equivariant),420k,97.803,97.922,158,-1.208,COMPACT SOTA
+MS-ResNet (Multi-Scale Residual),580k,98.422,98.593,107,-0.537,COMPACT SOTA
+SOTA Tri-Ensemble (DPCA + Polar + MS),"1,679k total",98.816,98.79,92,-0.34,HIGHLY COMPETITIVE

@@ -1,0 +1,11 @@
+Wafer_Test_ID,True_Defect,Predicted_Defect,Hallucinated_Primitive,Spurious_Equipment_Action,Unnecessary_Maintenance_Cost_USD
+438,C3 (Donut),C17 (D+S),Scratch,Wafer handler robot end-effector & cassette alignment audit,1800
+901,C11 (C+ER),C26 (C+ER+S),Scratch,Wafer handler robot end-effector & cassette alignment audit,1800
+1151,C5 (Edge_Ring),C20 (ER+L),Loc,CMP polish head replacement & slurry dispenser teardown,2500
+1327,C3 (Donut),C14 (D+EL),Edge_Loc,Edge-bead removal (EBR) dispense arm nozzle recalibration,1500
+3606,C6 (Loc),C22 (L+S),Scratch,Wafer handler robot end-effector & cassette alignment audit,1800
+4918,C5 (Edge_Ring),C20 (ER+L),Loc,CMP polish head replacement & slurry dispenser teardown,2500
+5713,C10 (C+EL),C23 (C+EL+L),Loc,CMP polish head replacement & slurry dispenser teardown,2500
+5880,C20 (ER+L),C34 (ER+L+S),Scratch,Wafer handler robot end-effector & cassette alignment audit,1800
+6804,C2 (Center),C10 (C+EL),Edge_Loc,Edge-bead removal (EBR) dispense arm nozzle recalibration,1500
+6826,C13 (C+S),C27 (C+L+S),Loc,CMP polish head replacement & slurry dispenser teardown,2500

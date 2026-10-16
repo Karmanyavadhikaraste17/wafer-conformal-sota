@@ -1,0 +1,4 @@
+Accounting_Convention,Industrial_Perspective,Baseline_Escapes_N_escape,Baseline_Confusions_N_confuse,Baseline_FA_Deferrals_N_FA,Baseline_Total_Loss,Conformal_Escapes_N_escape,Conformal_Confusions_N_confuse,Conformal_FA_Deferrals_N_FA,Conformal_Total_Loss,Net_Dollar_Savings,Percentage_Loss_Reduction
+Convention A: Per-Primitive Chamber Miss,Tool Chamber Reliability & Multi-Bay FDC,104,7,0,1041400,56,0,414,580700,460700,44.24%
+Convention B: Strict Per-Wafer Unit,Wafer Lot Logistics & Metrology Gate,73,7,0,731400,56,0,414,580700,150700,20.60%
+Convention B (All 80 as Catastrophic),Zero-Tolerance Production Cleanroom,80,0,0,800000,56,0,414,580700,219300,27.41%

@@ -1,0 +1,4 @@
+Model,Val_Calibrated_Threshold_c,Target_Deferral_Rate_Pct,Realized_Naive_Deferrals,Realized_Conformal_Deferrals,Argmax_ZeroDefer_Loss,Naive_Deferral_Loss,Conformal_Policy_Loss,Naive_Dollar_Saving,Conformal_Dollar_Saving,Conformal_Pure_Advantage_Dollars,Pct_Pure_Deferral_Artifact,Pct_Conformal_Calibration_Benefit
+DAP-Net (Benchmark Backbone),0.9916,5.5,444/7603 (5.84%),170/7603 (2.24%),771400,292400,469300,479000,302100,-176900,158.56,-58.56
+DPCANet-v3 Standalone,0.9731,5.5,434/7603 (5.71%),289/7603 (3.80%),782200,361900,454850,420300,327350,-92950,128.39,-28.39
+SOTA Tri-Ensemble,0.9424,5.5,414/7603 (5.45%),516/7603 (6.79%),781600,330900,386200,450700,395400,-55300,113.99,-13.99

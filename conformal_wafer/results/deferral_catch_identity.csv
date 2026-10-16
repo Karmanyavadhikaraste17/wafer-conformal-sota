@@ -1,0 +1,11 @@
+Metric,Value,Unit,Description
+Deterministic Point Errors (|E_det|),80.0,Wafers,Errors committed by point predictor (Top-1 = 98.948%)
+Conformal Non-Coverage Events (|E_noncov|),56.0,Wafers,Wafers where conformal set omits true defect at alpha=0.01 (Coverage = 99.263%)
+Subset Invariant: E_noncov ⊆ E_det,1.0,Boolean Invariant,Proves non-coverage is a strict subset of deterministic errors (rank-1 argmax property)
+Deterministic Errors Converted by Deferral (|E_catch|),24.0,Wafers,Deterministic errors routed to FA review with true class in size-2 set (80 - 56 = 24)
+Escaped Excursion Cost Avoided per Wafer,10000.0,USD,Catastrophic scrap penalty avoided by human intervention
+Human Failure Analysis (FA) Inspection Fee,50.0,USD,Nominal engineering review fee for narrow candidate set (~2.01 classes)
+Net Financial Saving per Caught Wafer,9950.0,USD,"$10,000 - $50 = $9,950 per intercepted wafer"
+Total Direct Deferral-Catch Savings,238800.0,USD,"24 * $9,950 = $238,800 direct causal economic savings"
+Total Reported Fab Operational Savings,460700.0,USD,"Baseline loss $1,041,400 - Conformal loss $580,700"
+Structural Identity Proportion of Total Savings,51.83,Percent,Over 51.8% of savings directly proven by structural causal identity

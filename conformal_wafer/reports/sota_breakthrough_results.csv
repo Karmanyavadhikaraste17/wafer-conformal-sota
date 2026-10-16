@@ -1,0 +1,11 @@
+Model,Parameters,Single (%),D4-TTA (%),"Errors (/7,603)",Macro-F1 (%),Delta vs RDP-Net (%),Status
+DAP-Net (Benchmark Backbone),875k,98.6,98.74,106,98.65,-0.39,BENCHMARK BASELINE
+PolarNet-v2 (Continuous Equivariant),420k,97.803,97.922,158,97.81,-1.208,COMPACT SOTA
+WaferNeXt-Compact (7x7 Depthwise ConvNeXt),"1,075k",98.053,98.185,138,98.09,-0.945,COMPACT SOTA
+RDP-WaferNet (Radial+Sobel+Dynamic),"1,008k",98.238,98.316,128,98.21,-0.814,COMPACT SOTA
+MS-ResNet (Multi-Scale Residual),580k,98.422,98.593,107,98.51,-0.537,COMPACT SOTA
+HFEdgeDPCANet (Edge Stream + EPCA + Dual-Head),712k,98.619,98.764,94,98.69,-0.366,COMPACT SOTA
+DPCANet-v2 (Dynamic Multi-Scale + CoordAttn),679k,98.79,98.856,87,98.85,-0.274,PRIMARY SOTA WORKHORSE
+SOTA Dual-Ensemble (DPCANet-v2 + HFEdgeDPCANet),"1,391k total",98.816,98.882,85,98.84,-0.248,SOTA ENSEMBLE
+Disentangled Margin-Gated Ensemble,"1,391k total",98.842,98.908,83,98.88,-0.222,BEST SOTA ENSEMBLE
+"RDP-Net (Liu & Wang, ISA Trans. 2025)","1,120k",99.13,99.13,66,99.12,0.0,PUBLISHED BENCHMARK TARGET

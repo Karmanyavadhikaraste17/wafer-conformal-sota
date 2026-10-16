@@ -1,0 +1,5 @@
+Severity_Tier,Operational_Action,Unit_Cost,Baseline_Events_per_10k,Baseline_Cost_per_10k,Conformal_Events_per_10k,Conformal_Cost_per_10k,Delta_Events,Delta_Cost
+Tier 1: Human FA Inline Inspection Review,High-resolution optical / SEM review of deferred candidate set,50,0,0,550,27500,550,27500
+Tier 2: Minor Chamber Recalibration / Localized Rework,"Within-module wafer stripping, spin-rinse-dry, or recipe trim",500,40,20000,8,4000,-32,-16000
+Tier 3: Catastrophic Multi-Wafer Excursion Lot Scrap,Multi-tool compound excursion escape scrapping downstream lots,5000,32,160000,4,20000,-28,-140000
+"TOTAL CONSERVATIVE 3-TIER LOSS (10,000 WAFERS)",Full semiconductor fab metrology operational risk exposure,-,72,180000,562,51500,490,-128500
