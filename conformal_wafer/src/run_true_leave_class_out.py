@@ -2,7 +2,7 @@
 run_true_leave_class_out.py
 
 Implements a PRISTINE, true Leave-Class-Out Out-of-Distribution (OOD) experiment
-addressing Anara's Weakness 2:
+addressing Reviewer's Weakness 2:
 1. Filters C1-C34 (34 known classes, Depths 0-3) for Train, Val, Cal, and Test ID.
 2. Completely EXCLUDES C35-C38 (4 quadruple-mixed classes, Depth 4) from model training,
    validation, calibration, and all threshold selection.

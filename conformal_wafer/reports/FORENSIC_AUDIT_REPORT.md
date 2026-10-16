@@ -175,7 +175,7 @@ We loaded the trained Compositional Polar Network checkpoint (`conformal_wafer/c
 ### Why Did the Numbers Conflict with the Later Reports?
 1. **The $382k–$500k vs. $92k–$150k Conflict:**  
    - In the slide deck and early reports, the baseline was the unoptimized **DAP-Net point model**, which had 111 errors (scored under Convention A as 104 compound escapes + 7 confusions = **$1,041,400** baseline loss). Against this huge baseline, Conformal Loss ($580,700) produced **$460,700 net savings (44.24%)**, and with varying cost ratios ($8,000–$11,000 per escape) yielded **$382k–$500k**.
-   - When Anara's red team attacked this inflated baseline, the authors were forced to compare against **RDP-Net (66 errors, $605k–$660k loss)** and **Strict Per-Wafer unit accounting (80 errors, $736k–$800k loss)**.
+   - When Independent red-team audit attacked this inflated baseline, the authors were forced to compare against **RDP-Net (66 errors, $605k–$660k loss)** and **Strict Per-Wafer unit accounting (80 errors, $736k–$800k loss)**.
    - Against RDP-Net and the 80-error baseline, the deployed conformal loss ($508,500) yielded net savings of only **$92,700 – $151,500**!
    - The slide deck was never revised to reflect the post-audit figures, leaving the old $382k–$500k headline intact.
 2. **The 90% vs. 99% Coverage Conflict:**  

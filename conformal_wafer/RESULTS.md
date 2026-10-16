@@ -331,7 +331,7 @@ Hence, known single- and compound patterns are not rejected by the novelty score
 
 **Proposition 3 (Closed-World Simplex Bottleneck):** A standard flat classifier outputs $p(\cdot \mid x) \in \Delta^{33}$ over the 34 known classes. Because $\sum_{y=1}^{34} p(y \mid x) \equiv 1$ for all inputs, the probability of novelty is identically zero under the model. Any heuristic score $s = g(p(\cdot \mid x))$ is a function of the simplex point alone and cannot distinguish a quad-mixture whose posterior splits between two known neighbors from an in-distribution wafer that is ambiguous between those same neighbors, whenever their softmax outputs coincide.
 
-*Executable Verification:* The formal bounds in Theorem 1 and Corollary 1 were certified with **0 violations over 800,000 Monte Carlo test evaluations** (`claude_files8/verify_section5_theory.py`).
+*Executable Verification:* The formal bounds in Theorem 1 and Corollary 1 were certified with **0 violations over 800,000 Monte Carlo test evaluations** (`theory/verify_section5_theory.py`).
 
 
 ### 6.3 Upper-Bound Off-Manifold Diagnostic: Synthetic Contamination Benchmark (`results/hybrid_ood_benchmark.csv`)

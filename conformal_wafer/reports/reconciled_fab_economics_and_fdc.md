@@ -2,7 +2,7 @@
 
 **Document ID:** `conformal_wafer/reports/reconciled_fab_economics_and_fdc.md`  
 **Author:** Agent 3 — Fab Economics & FDC Integration Modeler  
-**Review Target:** Resolution of Anara Audit Section 4.2, Section 3.3, and P0 Item 2  
+**Review Target:** Resolution of Referee Audit Section 4.2, Section 3.3, and P0 Item 2  
 **Target Venues:** IEEE Transactions on Industrial Informatics (IEEE TII) & IEEE Transactions on Semiconductor Manufacturing (IEEE T-SM)  
 **Status:** Certified & Reconciled across Empirical Test Stream ($N = 7,603$ Wafers)
 
@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary & Audit Resolution Scope
 
-This report provides the complete, mathematically closed, and industrially grounded resolution to the economic and industrial informatics challenges raised in Senior Referee Anara's comprehensive audit. Specifically, this document resolves:
+This report provides the complete, mathematically closed, and industrially grounded resolution to the economic and industrial informatics challenges raised in Senior Technical Referee's comprehensive audit. Specifically, this document resolves:
 1. **P0 Item 2 & Section 4.2 (Single Unified Loss Accounting):** We formalize an explicit four-parameter operational loss function, reconcile the apparent 104 vs. 80 escape count discrepancy, and present both accounting conventions—**Convention A (Per-Primitive Chamber Miss)** and **Convention B (Strict Per-Wafer Unit Accounting)**—side-by-side with full semiconductor domain justification.
 2. **Section 4.2 (The Complete 3-Tier Conservative Economic Matrix):** We publish the explicit event counts, unit costs ($T_1 = \$50, T_2 = \$500, T_3 = \$5,000$), and step-by-step arithmetic proving the **71.4% cost reduction** and **$\$128,500$ net savings per 10,000 wafers** under the conservative fab benchmark, with full mathematical proofs of the fee-supersession convention.
 3. **P1 Item 8 & Section 4.2 (Spurious Maintenance Modeling):** We incorporate false-positive hallucination errors into the fab cost function, assigning realistic downtime and qualification costs ($C_{\text{spurious}} = \$500$) to demonstrate that conformal triage completely eliminates phantom maintenance halts on automated wafers.
@@ -169,7 +169,7 @@ Across the 7,603 test stream:
 
 ### 3.2 Model 1: Direct Stream-Mapped Zero-Tolerance Model (All Non-Coverage Charged at Full Severity)
 
-In response to Anara\'s Blocker 1, we eliminate any implicit exclusion of the 52 singleton misses. Under the conservative zero-tolerance standard, **every single non-coverage event is charged the full catastrophic scrap penalty ( = \,000$)**:
+In response to Reviewer\'s Blocker 1, we eliminate any implicit exclusion of the 52 singleton misses. Under the conservative zero-tolerance standard, **every single non-coverage event is charged the full catastrophic scrap penalty ( = \,000$)**:
 
 #### Table 2A: Direct Stream-Mapped Zero-Tolerance Accounting (per 10,000 Wafers)
 *Unit Costs: Tier 1 (FA Review)  = \$; Tier 3 (Catastrophic Lot Scrap)  = \,000$*  

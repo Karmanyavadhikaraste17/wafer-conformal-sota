@@ -2,7 +2,7 @@
 
 **Venue Focus:** IEEE Transactions on Semiconductor Manufacturing (IEEE T-SM) / IEEE TIM / IEEE TII  
 **Dataset:** MixedWM38 (38,015 Wafers, 38 Classes, 5 Mixture Depths, 7,603 Held-Out Test Wafers)  
-**Audit Reference:** Anara Red-Team Audit (Sections 4.3, 4.4, 4.7, P0/P1 Checklist)  
+**Audit Reference:** Independent Red-Team Audit Audit (Sections 4.3, 4.4, 4.7, P0/P1 Checklist)  
 
 ---
 

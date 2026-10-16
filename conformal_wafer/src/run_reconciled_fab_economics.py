@@ -4,7 +4,7 @@ run_reconciled_fab_economics.py
 Comprehensive economic reconciliation and multi-scenario industrial drift simulation
 for semiconductor wafer defect conformal prediction (IEEE TII & IEEE T-SM defense).
 
-Addresses Anara Audit:
+Addresses Referee Audit:
 - Section 4.2: Economic Loss Accounting Reconciliation (104 vs 80, per-wafer vs per-primitive)
 - Section 4.2: 3-Tier Conservative Economic Matrix (T1=$50, T2=$500, T3=$5000, 71.4%, $128,500)
 - Section 4.2 / P1 Item 8: Spurious Tool Maintenance Costs from Hallucination Errors

@@ -1,6 +1,6 @@
 """
-Executable Verification Script for Anara Audit Mathematical Reconciliation
-Reference: conformal_wafer/reports/anara_math_reconciliation.md
+Executable Verification Script for Referee Audit Mathematical Reconciliation
+Reference: conformal_wafer/reports/mathematical_reconciliation_report.md
 Covers:
 1. Exact Binomial p-value under H0: p = 0.01 (k=56, n=7603)
 2. Exact Wilson 95% Confidence Intervals for error rate and coverage
@@ -82,19 +82,19 @@ def verify_theorem1_margin():
         elif m == 5:
             assert round(tau_double, 4) == -0.4117
             # With rounded intermediate s0 = 0.3986:
-            tau_anara = math.log(0.3986 / (1.0 - 0.3986))
-            assert round(tau_anara, 4) == -0.4113
+            tau_target = math.log(0.3986 / (1.0 - 0.3986))
+            assert round(tau_target, 4) == -0.4113
             print(f"  [PASS] m=5 reconciled: float64 is -0.4117; intermediate s0=0.3986 yields -0.4113")
         elif m == 6:
             assert round(tau_double, 4) == -0.1421
-            tau_anara = math.log(0.4646 / (1.0 - 0.4646))
-            assert round(tau_anara, 4) in [-0.1418, -0.1419]
-            print(f"  [PASS] m=6 reconciled: float64 is -0.1421; intermediate s0=0.4646 yields {tau_anara:.4f}")
+            tau_target = math.log(0.4646 / (1.0 - 0.4646))
+            assert round(tau_target, 4) in [-0.1418, -0.1419]
+            print(f"  [PASS] m=6 reconciled: float64 is -0.1421; intermediate s0=0.4646 yields {tau_target:.4f}")
         elif m == 8:
             assert round(tau_double, 4) == 0.2521
-            tau_anara = math.log(0.56267 / (1.0 - 0.56267))
-            assert round(tau_anara, 4) in [0.2520, 0.2521]
-            print(f"  [PASS] m=8 reconciled: float64 is +0.2521; intermediate s0=0.56267 yields {tau_anara:.4f}")
+            tau_target = math.log(0.56267 / (1.0 - 0.56267))
+            assert round(tau_target, 4) in [0.2520, 0.2521]
+            print(f"  [PASS] m=8 reconciled: float64 is +0.2521; intermediate s0=0.56267 yields {tau_target:.4f}")
 
 
 def verify_monte_carlo():

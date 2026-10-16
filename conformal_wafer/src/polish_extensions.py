@@ -1,7 +1,7 @@
 """
 polish_extensions.py
 
-Implements the 8 reviewer-defense polish items flagged by the Anara audit:
+Implements the 8 reviewer-defense polish items flagged by the Referee audit:
 1. Validation-Set Ensemble Weight Selection (Item 1 - Leak-Free provenance)
 2. Cost-Loss Arithmetic Decomposition Table (Item 6 - Detailed breakdown)
 3. ACI Hyperparameter Sensitivity Sweep over gamma and W (Item 7 - Stability proof)
@@ -21,7 +21,7 @@ from .conformal import ConformalPredictor
 
 def main():
     print("=" * 80)
-    print("EXECUTING ANARA AUDIT POLISH & REVIEWER DEFENSE SUITE")
+    print("EXECUTING PEER REVIEW AUDIT POLISH & REVIEWER DEFENSE SUITE")
     print("=" * 80)
 
     loaders = get_dataloaders()
@@ -401,7 +401,7 @@ def main():
         shutil.copy2(src, dst)
         print(f"Mirrored to reports: {dst}")
 
-    print("\n[SUCCESS] Anara audit polish suite completed cleanly!")
+    print("\n[SUCCESS] Referee audit polish suite completed cleanly!")
 
 if __name__ == '__main__':
     main()

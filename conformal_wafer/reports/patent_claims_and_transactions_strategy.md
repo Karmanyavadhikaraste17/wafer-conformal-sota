@@ -2,7 +2,7 @@
 
 **Document Title:** Risk-Bounded Multi-Label Defect Recognition with Distribution-Free Calibration and Equipment-Fault Triage Routing in Semiconductor Manufacturing  
 **Author:** Metrology Research & Intellectual Property Strategy Team  
-**Audit Reference:** Senior Referee Anara Comprehensive Red-Team Audit (Sections 2, 3, and P1)  
+**Audit Reference:** Senior Technical Referee Comprehensive Red-Team Audit (Sections 2, 3, and P1)  
 **Target Publication Venues:** IEEE Transactions on Semiconductor Manufacturing (Priority 1), IEEE Transactions on Instrumentation and Measurement (Priority 2), IEEE Transactions on Industrial Informatics (Priority 3), IEEE Access (Standby Fallback)  
 **Patent Jurisdiction:** USPTO (35 U.S.C. §§ 101, 102, 103) and PCT / EPO Compatible  
 **Date of Execution:** October 2026  
@@ -12,7 +12,7 @@
 
 ## Executive Summary & Strategic Positioning
 
-This document establishes the definitive intellectual property (patent claim architecture) and journal publication playbook for our risk-bounded semiconductor wafer defect recognition and automated equipment triage system. It directly addresses and executes the corrective actions and strategic mandates codified in Sections 2, 3, and P1 of Senior Referee Anara's exhaustive audit.
+This document establishes the definitive intellectual property (patent claim architecture) and journal publication playbook for our risk-bounded semiconductor wafer defect recognition and automated equipment triage system. It directly addresses and executes the corrective actions and strategic mandates codified in Sections 2, 3, and P1 of Senior Technical Referee's exhaustive audit.
 
 ### 1. The Core Strategic Pivot
 Over 25 recent publications (2020–2026) evaluated on the benchmark MixedWM38 dataset have competed exclusively in a saturated point-prediction accuracy race, pushing nominal Top-1 accuracy into the narrow band between $98.0\%$ and $99.13\%$ (e.g., DC-Net at $98.66\%$, DAP-Net at $98.60\%$, and RDP-Net at $99.13\%$, *ISA Transactions* 2025). Despite these microscopic point gains, every existing architecture outputs an uncalibrated point decision. In high-volume semiconductor manufacturing (HVM), an uncalibrated error on a complex multi-defect excursion scraps entire wafer lots ($C_{\text{escape}} = \$10,000$), while forcing engineering teams to inspect healthy tools. 
@@ -283,7 +283,7 @@ IEEE Access          Standby Fallback      Rapid-Turnaround Applied        Compr
 ## 1. IEEE Transactions on Semiconductor Manufacturing (IEEE T-SM) — Priority 1 Target
 
 ### Acceptance Target & Fit Analysis
-- **Acceptance Probability:** **65% to 75%** (officially cleared post-Anara audit).
+- **Acceptance Probability:** **65% to 75%** (officially cleared post-Referee audit).
 - **Venue Context:** *IEEE T-SM* is the historical home of wafer defect pattern recognition. It published DC-Net (Wang et al., 2020), MSF-Trans (Wei & Wang, 2022), Tensor Voting (Wang & Chen, 2022), and semi-supervised DPR (Lee & Kim, 2020). The reviewers are senior semiconductor yield engineers and AOI metrology architects.
 
 ### The Winning Narrative: Leading with Safety, Metrology, and Risk Bounding
@@ -401,9 +401,9 @@ The TII manuscript leads with:
 
 ---
 
-# PART III: Senior Reviewer Rebuttal Pack (Anara Red-Team Defense)
+# PART III: Senior Reviewer Rebuttal Pack (Independent Red-Team Audit Defense)
 
-This section provides authoritative, point-by-point rebuttal templates addressing the three most dangerous vulnerabilities flagged during Senior Referee Anara's red-team audit:
+This section provides authoritative, point-by-point rebuttal templates addressing the three most dangerous vulnerabilities flagged during Senior Technical Referee's red-team audit:
 1. The **80 vs. 66 Accuracy Gap** against published RDP-Net.
 2. The **Lack of Full Paired Retraining** for Specialist and Arbiter Heads.
 3. **Exchangeability Concerns under GAN-Balanced Data**.

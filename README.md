@@ -121,9 +121,6 @@ wafer-conformal-sota/
 │       ├── conformal.py             # Conformal RAPS & nonconformity engine
 │       ├── advanced_conformal.py    # ACI drift, Mondrian & triage dispatch
 │       └── run_pipeline.py          # Master training & evaluation driver
-├── docs/                            # Presentation & research prompts
-│   ├── CLAUDE_MASTER_PRESENTATION_PROMPT.md # Complete defense presentation prompt
-│   └── CLAUDE_IMAGE_REGEN_AND_DATA_SPEC_PROMPT.md # Multi-image data specifications
 ├── scripts/                         # Research utilities & diagnostics
 │   └── analysis/                    # Error taxonomy, knot & rank inspection tools
 ├── evaluate_tri_stream.py           # Evaluates TriStream union (61 errors)
@@ -172,12 +169,11 @@ python generate_ieee_tables.py
 
 ---
 
-## 📊 Presentation Deck & Claude Defense Engine
+## 📊 Publication Figures & Research Assets
 
-The repository includes a comprehensive, human-grade defense presentation blueprint in `docs/`:
-- **[`CLAUDE_MASTER_PRESENTATION_PROMPT.md`](docs/CLAUDE_MASTER_PRESENTATION_PROMPT.md):** 16-slide structured defense prompt with minimal text per slide, full speaker notes, and Canva connector integration.
-- **[`CLAUDE_IMAGE_REGEN_AND_DATA_SPEC_PROMPT.md`](docs/CLAUDE_IMAGE_REGEN_AND_DATA_SPEC_PROMPT.md):** Complete numerical dataset specifications enabling autonomous multi-image regeneration.
-- **[`clean_results/DualCoord_Wafer_Clean_Results.zip`](clean_results/DualCoord_Wafer_Clean_Results.zip):** Pre-rendered, 300 DPI verified assets ready to embed into slides.
+The complete suite of high-resolution, camera-ready figures, flowcharts, and academic booktabs tables is maintained in `clean_results/`:
+- **[`clean_results/`](clean_results/):** 19 verified scientific assets (300 DPI, IEEE Transactions standard).
+- **[`clean_results/DualCoord_Wafer_Clean_Results.zip`](clean_results/DualCoord_Wafer_Clean_Results.zip):** Direct archive of all camera-ready figures and tables.
 
 ---
 

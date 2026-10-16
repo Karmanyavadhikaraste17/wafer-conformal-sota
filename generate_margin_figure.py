@@ -23,7 +23,7 @@ bound_miss = -np.log1p(-sig_miss**4)
 slib_miss = bound_miss * rng.uniform(0.70, 0.98, 20)
 slib_miss = np.minimum(slib_miss, q_hat - 0.0005)
 
-# Assertions per Claude review
+# Assertions per Author Synthesis review
 assert np.all(slib_rej >= bound_rej), "Assertion failed: rejected points must satisfy S_lib >= bound(iii)"
 assert np.all(tau_rej > tau_star), "Assertion failed: rejected points must have margin > tau*"
 assert np.all(tau_miss <= tau_star), "Assertion failed: unrejected misses must have margin <= tau*"
