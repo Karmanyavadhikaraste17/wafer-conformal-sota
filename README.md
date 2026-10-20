@@ -7,9 +7,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **Official Repository for DualCoord-Wafer**  
-> **Authors:** Manav Sharma, Prachi Gupta, Bhumi Agarwal  
+> **Authors:** Manav Sharma (24BEC0566), Prachi Gupta (24BVD0211), Bhumi Agarwal (24BVD0201)  
+> **Project Guide:** Dr. Sumathi G.  
 > **Affiliation:** School of Electronics Engineering (SENSE), Vellore Institute of Technology (VIT), Vellore, India  
-> **Target Venue:** IEEE Transactions on Semiconductor Manufacturing / Capstone Senior Design  
+> **Target Venue:** IEEE Transactions on Semiconductor Manufacturing / Capstone Senior Design Final Defense  
 
 ---
 
