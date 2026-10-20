@@ -84,10 +84,48 @@ Benchmarked on an **NVIDIA GeForce RTX 4050 Laptop GPU (6GB VRAM)**:
 
 ---
 
-## 📁 Repository Structure
+## 📁 Repository Structure & Deliverables
 
 ```
 wafer-conformal-sota/
+├── DualCoord_Wafer_Capstone_Defense_Presentation.pptx # Official 16-Slide Final Defense Presentation
+├── papers.zip                       # Complete 25-paper archive (Originals + Forensic Dossiers + Patents)
+├── dataset.zip                      # Complete MixedWM38 dataset bundle (Photos, Gallery, Spec, Sample NPZ)
+├── evaluate_tri_stream.py           # Verification script evaluating deployable SOTA model (61 errors)
+├── build_defense_deck.py            # Master PowerPoint generation & auto-sanitization script
+├── requirements.txt                 # Exact Python dependencies
+├── RESULTS.md                       # Comprehensive numerical audit & SOTA scoreboard
+├── README.md                        # Master orientation & engineering overview
+│
+├── dataset/                         # Dataset assets & visual inspection photos
+│   ├── MixedWM38_38_Class_Visual_Gallery.png # Master 38-class visual taxonomy gallery
+│   ├── DATASET_SPECIFICATION.md     # Full dataset specification and cleanroom physics guide
+│   ├── DATASET_SPECIFICATION.pdf    # Executive printable dataset specification dossier
+│   ├── class_distribution_manifest.csv # Full sample distribution and split counts manifest
+│   ├── MixedWM38_Sample_Subset_500.npz # 500-wafer sample array for instantaneous live loading
+│   └── wafer_photos_by_depth/       # 76 high-res wafer photos categorized by mixture depth (Depths 0-4)
+│
+├── papers/                          # Table II peer-reviewed literature, dossiers & patents
+│   ├── 00_TABLE_II_FORENSIC_LITERATURE_AUDIT_MASTER_INDEX.pdf # Master audit matrix & citation index
+│   ├── 01_Liu_Wang_RDPNet_ISA_Transactions_2025_Dossier.pdf   # RDP-Net published SOTA audit
+│   ├── 02_He_et_al_DAPNet_IEEE_Access_2025_Dossier.pdf        # DAP-Net coordinate attention audit
+│   ├── 03_Nie_Shen_EM_SSM_DATE_2025_Dossier.pdf               # EM-SSM state-space Mamba audit
+│   ├── 03_Vision_Mamba_State_Space_Model.pdf                 # Full ICML original 2D Mamba paper
+│   ├── 04_Gu_Wang_PatchNet_Meas_Sci_Tech_2025_Dossier.pdf     # Patch-Net transformer audit
+│   ├── 05_RegionViT_Regional_Attention_Vision_Transformer.pdf # Full RegionViT original paper
+│   ├── 06_CapsNet_Mixed_Nagamura_IEEE_Access_2025_Dossier.pdf # CapsNet-Mixed dynamic routing audit
+│   ├── 07_Park_Kim_KIEE_Net_Trans_KIEE_2025_Dossier.pdf       # KIEE Net multi-scale ResNet audit
+│   ├── 08_Zhang_Zhou_Conformal_Prediction_IEEE_TII_2025_Dossier.pdf # Conformal time-series audit
+│   ├── 09_Alijani_Najjaran_WQLCP_CVPRW2025.pdf               # Full CVPRW 2025 WQLCP original paper
+│   ├── 10_Gibbs_Candes_Adaptive_Conformal_Inference_NeurIPS2021.pdf # Full Candes ACI original paper
+│   ├── 10_Liao_et_al_TMWDM_Sensors_IJPR_2026_Dossier.pdf      # TMWDM evidential deep learning audit
+│   ├── 00_Angelopoulos_RAPS_Conformal_ICLR2021.pdf           # Full Angelopoulos RAPS original paper
+│   ├── 00_Romano_APS_Conformal_NeurIPS2020.pdf               # Full Romano APS original paper
+│   ├── 14_Duan_Deep_Learning_Wafer_Map_Inspection_Survey.pdf # Full 40-page authoritative survey
+│   ├── 16_KLA_US11922619_Patent.pdf                          # Official KLA cleanroom metrology patent
+│   ├── 16_Applied_Materials_US9858658_Fab_Metrology_Patent.pdf # Official Applied Materials patent
+│   └── 16_TSMC_US7162071_Die_To_Database_Patent.pdf          # Official TSMC cleanroom patent
+│
 ├── clean_results/                   # 19 CV-verified publication figures & tables (300 DPI)
 │   ├── result_01_wafer_gallery.png  # Authentic 52x52 wafer defect archetypes
 │   ├── result_02_scratch_pooling.png# CMP hairline dilution mechanics
@@ -107,33 +145,14 @@ wafer-conformal-sota/
 │   ├── table_04_fab_economics.png   # SEMATECH cost-loss ledger
 │   ├── table_05_dataset_taxonomy.png# MixedWM38 structural breakdown
 │   ├── table_06_failure_physics.png # Diagnostic breakdown of baseline errors
-│   ├── table_07_drift_conformal_telemetry.png # Conformal & telemetry guarantees
-│   └── DualCoord_Wafer_Clean_Results.zip # Complete verified assets bundle (4.5 MB)
-├── conformal_wafer/                 # Core modular package
-│   ├── data/                        # Dataset descriptions (raw npz gitignored)
-│   ├── figures/                     # Core research figures
-│   ├── reports/                     # Experimental audit reports & CSV matrices
-│   ├── results/                     # 15+ verified experimental CSV logs
-│   └── src/                         # Production source code
-│       ├── config.py                # Hyperparameters, paths & seeds
-│       ├── dataset.py               # 3-channel encoding & leakage-free splits
-│       ├── models.py                # DualCoord, DAP-Net, ResNet-18, ViT-Tiny
-│       ├── train.py                 # Mixed-precision training routines
-│       ├── conformal.py             # Conformal RAPS & nonconformity engine
-│       ├── advanced_conformal.py    # ACI drift, Mondrian & triage dispatch
-│       └── run_pipeline.py          # Master training & evaluation driver
-├── scripts/                         # Research utilities & diagnostics
-│   └── analysis/                    # Error taxonomy, knot & rank inspection tools
-├── evaluate_tri_stream.py           # Evaluates TriStream union (61 errors)
-├── final_ensemble_audit.py          # Verifies 60-error SOTA scoreboard
-├── generate_clean_flowcharts.py     # Generates publication flowcharts
-├── generate_ieee_tables.py          # Generates booktabs publication tables
-├── generate_pure_scientific_figures.py # Generates pure matplotlib scientific figures
-├── cv_verifier.py                   # Automated computer vision image verifier
-├── requirements.txt                 # Python dependencies
-├── LICENSE                          # MIT License
-├── RESULTS.md                       # Comprehensive numerical results & audit
-└── README.md
+│   └── table_07_drift_conformal_telemetry.png # Conformal & telemetry guarantees
+│
+├── presentation_renders/            # All 16 defense slide renders at 1080p for instant review
+├── conformal_wafer/                 # Modular PyTorch package with verified checkpoints
+│   ├── checkpoints/                 # Best trained model checkpoints (dpcanet, hf_edgedpcanet)
+│   ├── data/                        # Wafer_Map_Datasets.npz (full 38,015 wafer array)
+│   └── src/                         # Production training, RAPS, and ACI implementation
+└── scripts/                         # Research utilities, verification tools & table generators
 ```
 
 ---
@@ -148,24 +167,23 @@ cd wafer-conformal-sota
 pip install -r requirements.txt
 ```
 
-### 2. Verify the 60-Error SOTA Scoreboard
-Run the official audit script to verify integer error counts across the canonical 7,603 split:
-```bash
-python final_ensemble_audit.py
-```
-
-### 3. Evaluate Single-Pass TriStream Model
-Verify the 61-error deployable surrogate:
+### 2. Evaluate the SOTA Surpass (61 Errors, Single-Pass)
+Verify the headline TriStream model on the canonical 7,603-wafer test split:
 ```bash
 python evaluate_tri_stream.py
 ```
 
-### 4. Regenerate Clean Publication Figures & Tables
-Generate all 19 CV-verified figures, tables, and flowcharts into `clean_results/`:
+### 3. Build & Sanitize the Capstone Defense Presentation
+Build the 16-slide PowerPoint deck with native tables, KPI cards, and uncompressed figures:
 ```bash
-python generate_pure_scientific_figures.py
-python generate_clean_flowcharts.py
-python generate_ieee_tables.py
+python build_defense_deck.py
+```
+
+### 4. Regenerate Literature Dossiers & Master Index
+Regenerate all 8 paper dossiers and the Table II master index:
+```bash
+python scripts/build_paper_dossiers.py
+python scripts/build_master_index.py
 ```
 
 ---
